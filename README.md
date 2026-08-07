@@ -48,8 +48,8 @@ prérequis technique, qui prend 15 à 20 minutes.
 Version courte, si vous êtes déjà à l'aise :
 
 ```bash
-git clone https://github.com/bilelsanhaji/M2-Crypto-Fintech.git
-cd M2-Crypto-Fintech
+git clone https://github.com/bilelsanhaji/Cours-Crypto-Fintech.git
+cd Cours-Crypto-Fintech
 
 python3 -m venv .venv
 source .venv/bin/activate          # Windows : .venv\Scripts\activate
