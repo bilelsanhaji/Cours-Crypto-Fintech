@@ -1,0 +1,72 @@
+# =====================================================================
+#  CONTENU ENSEIGNANT — ne doit jamais être publié
+# =====================================================================
+
+# Notes d'expertise, déroulés minutés, FAQ, chiffres clés, articulation
+05-Enseignant/
+
+# Barèmes et corrigé du QCM. Les sujets de projet, eux, sont publiés.
+04-Eval/grilles-notation.md
+04-Eval/qcm-verification.md
+
+# Corrigés des TP — diffusés séparément, après chaque séance
+02-TP/corriges/
+
+# Le générateur des notebooks contient la TOTALITÉ des solutions
+02-TP/_generer_notebooks.py
+
+# Slides : les sources contiennent les notes de conduite de séance, que
+# reveal.js embarque dans le HTML (touche S). Seule la version épurée,
+# produite par _build-version-etudiante.py, est publiée.
+01-Slides/S1-fondamentaux.qmd
+01-Slides/S2-faits-stylises.qmd
+01-Slides/S3-risque.qmd
+01-Slides/*.html
+!01-Slides/etudiant/
+_build-version-etudiante.py
+
+# Versions antérieures du syllabus
+99-Archive/
+
+# Lanceurs personnels macOS
+*.command
+
+# =====================================================================
+#  Artefacts de compilation et d'exécution
+# =====================================================================
+.DS_Store
+Thumbs.db
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.quarto/
+*_files/
+*_cache/
+00-Syllabus/*.html
+00-Syllabus/*.pdf
+02-TP/*.html
+04-Eval/*.html
+05-Enseignant/*.html
+
+# =====================================================================
+#  Données régénérables
+# =====================================================================
+# 03-Data/backup/ EST versionné : c'est le plan B en salle.
+03-Data/panier.csv
+03-Data/panier_complet.csv
+03-Data/rendements.csv
+03-Data/mon_panier.csv
+!03-Data/backup/
+
+# Rendus des étudiants
+rendus/
+*.zip
+
+# Vestiges de l'ancien dépôt R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata

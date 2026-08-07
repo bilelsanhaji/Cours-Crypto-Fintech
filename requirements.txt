@@ -1,0 +1,19 @@
+# Cours M2 Crypto/Fintech — environnement Python
+# pip install -r requirements.txt
+
+pandas>=2.0
+numpy>=1.24
+scipy>=1.10
+statsmodels>=0.14
+matplotlib>=3.7
+yfinance>=0.2.40
+requests>=2.31
+
+# JupyterLab pour les TP
+jupyterlab>=4.0
+ipykernel>=6.25
+
+# Optionnel — non utilisé dans les TP mais utile pour les projets étudiants
+# ccxt>=4.2          # accès unifié aux API des plateformes
+# arch>=6.3          # modèles de volatilité conditionnelle (hors programme de ce bloc)
+# pandas-datareader>=0.10   # accès FRED

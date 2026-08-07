@@ -1,0 +1,887 @@
+---
+title: "Séance 1 — Anatomie d'une classe d'actifs"
+subtitle: "Cryptomonnaies et Fintech · M2 MBFA, parcours Finance"
+# Configuration commune : 01-Slides/_quarto.yml
+format:
+  revealjs:
+    footer: "M2 MBFA — Crypto & Fintech — Séance 1"
+---
+
+<!--
+  VERSION ÉTUDIANTE — générée automatiquement par _build-version-etudiante.py
+  Ne pas modifier directement : toute modification serait écrasée.
+  La source se trouve dans 01-Slides/S1-fondamentaux.qmd
+-->
+
+## Déroulé de la séance {.smaller}
+
+::: {.small}
+| | | Durée | Ce qu'on y fait |
+|---|---|---|---|
+| **1** | De la monnaie au token | 50 min | Ce que sont ces objets, et d'où vient leur prix |
+| | *pause* | 10 min | |
+| **2** | L'écosystème financier | 50 min | Où ils se traitent, et sous quel droit |
+| | *pause* | 10 min | |
+| **3** | TP 0 et étude de cas | 50 min | Vos premières données, et le krach de 2026 |
+:::
+
+::: {.retenir}
+**Ce que vous saurez faire en sortant** — classer un crypto-actif dans une famille
+et dire d'où vient son prix · lire la structure d'un marché crypto · situer une
+opération dans le cadre MiCA · charger et décrire une série de prix crypto.
+:::
+
+
+## Trois chiffres, trois histoires
+
+::: {.columns}
+::: {.column width="33%"}
+[≈ 63 000 \$]{.chiffre}
+[Bitcoin, août 2026]{.legende}
+
+**−50 %** depuis le pic
+d'octobre 2025 (126 200 \$)
+:::
+::: {.column width="33%"}
+[≈ 315 Md \$]{.chiffre .chiffre-prusse}
+[Encours des stablecoins]{.legende}
+
+En **croissance** pendant que
+le Bitcoin s'effondrait
+:::
+::: {.column width="33%"}
+[≈ 32 Md \$]{.chiffre .chiffre-or}
+[Actifs réels tokenisés]{.legende}
+
+**× 2,7** en un an.
+Porté par BlackRock,
+Franklin Templeton
+:::
+:::
+
+. . .
+
+::: {.retenir}
+Trois segments, trois trajectoires **opposées** sur la même période. Un actif
+spéculatif en marché baissier, une infrastructure de paiement en croissance, une
+migration technique de la finance traditionnelle.
+
+Parler du « marché crypto » comme d'un tout est déjà une erreur d'analyse.
+:::
+
+
+## La posture de ce cours
+
+Les crypto-actifs sont un sujet où :
+
+- l'information disponible est **massivement produite par des parties intéressées** ;
+- le vocabulaire technique sert souvent à **masquer l'absence de modèle économique** ;
+- et où le mépris a priori fait rater des mécanismes bien réels.
+
+. . .
+
+::: {.retenir}
+**On applique la grille d'analyse financière standard.** Qui émet ? Qui achète ?
+Quel est le passif en face ? Quels sont les flux ? Que disent les données ?
+
+Ni promotion, ni dédain.
+:::
+
+::: {.question}
+Toute affirmation faite dans ce cours doit être vérifiable. Si je dis un chiffre,
+je dois pouvoir dire d'où il vient. **Cela vaut aussi pour vos rendus.**
+:::
+
+
+## Le fil des trois séances
+
+::: {.small}
+| | Question directrice | Ce que vous saurez faire |
+|---|---|---|
+| **S1** — aujourd'hui | De quoi parle-t-on ? | Classer un actif, lire un marché, situer une règle |
+| **S2** | En quoi ces séries sont-elles particulières ? | Établir les faits stylisés, tester l'efficience |
+| **S3** | Combien peut-on perdre ? | Estimer une VaR, la backtester, la critiquer |
+:::
+
+::: {.retenir}
+Le fil rouge est un **panier de cinq actifs** — Bitcoin, Ethereum, Solana,
+S&P 500, or — que vous constituez aujourd'hui et que vous garderez jusqu'au projet.
+:::
+
+
+# 1 — De la monnaie au token
+
+## Le problème d'origine : la double dépense
+
+Un fichier numérique se copie. Comment empêcher de dépenser **deux fois** la même
+unité, sans tiers de confiance ?
+
+::: {.columns}
+::: {.column width="48%"}
+### Solution classique
+
+Un registre **centralisé** — la banque.
+Elle vérifie le solde, elle débite,
+elle fait foi.
+
+→ Il faut lui faire confiance,
+et elle est régulée pour cela.
+:::
+::: {.column width="52%"}
+### Solution Bitcoin (2008)
+
+Un registre **répliqué** chez tous les
+participants, et une règle qui rend
+coûteuse la réécriture du passé.
+
+→ Il faut faire confiance à
+l'incitation économique et au code.
+:::
+:::
+
+. . .
+
+::: {.retenir}
+La blockchain ne **supprime** pas la confiance. Elle la **déplace** : d'un
+intermédiaire identifié et régulé vers un mécanisme d'incitation et un logiciel.
+:::
+
+
+## Ce qu'est une chaîne de blocs, en une image
+
+<svg class="schema" viewBox="0 0 980 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chaîne de blocs et coût de réécriture">
+  <defs>
+    <marker id="fl" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="var(--argent-fonce)"/>
+    </marker>
+    <marker id="flo" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="var(--or)"/>
+    </marker>
+  </defs>
+  <!-- chaîne honnête -->
+  <g font-size="15" fill="var(--encre)">
+    <g>
+      <rect x="20"  y="60" width="120" height="62" rx="3" fill="var(--prusse-voile)" stroke="var(--prusse)" stroke-width="1.5"/>
+      <text x="80"  y="84"  text-anchor="middle" font-weight="600" fill="var(--prusse)">Bloc n−2</text>
+      <text x="80"  y="106" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">empreinte de n−3</text>
+    </g>
+    <g>
+      <rect x="185" y="60" width="120" height="62" rx="3" fill="var(--prusse-voile)" stroke="var(--prusse)" stroke-width="1.5"/>
+      <text x="245" y="84"  text-anchor="middle" font-weight="600" fill="var(--prusse)">Bloc n−1</text>
+      <text x="245" y="106" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">empreinte de n−2</text>
+    </g>
+    <g>
+      <rect x="350" y="60" width="120" height="62" rx="3" fill="var(--prusse-voile)" stroke="var(--prusse)" stroke-width="1.5"/>
+      <text x="410" y="84"  text-anchor="middle" font-weight="600" fill="var(--prusse)">Bloc n</text>
+      <text x="410" y="106" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">empreinte de n−1</text>
+    </g>
+    <g>
+      <rect x="515" y="60" width="120" height="62" rx="3" fill="var(--klein-voile)" stroke="var(--klein)" stroke-width="1.5"/>
+      <text x="575" y="84"  text-anchor="middle" font-weight="600" fill="var(--klein)">Bloc n+1</text>
+      <text x="575" y="106" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">empreinte de n</text>
+    </g>
+    <g>
+      <rect x="680" y="60" width="120" height="62" rx="3" fill="var(--klein-voile)" stroke="var(--klein)" stroke-width="1.5"/>
+      <text x="740" y="84"  text-anchor="middle" font-weight="600" fill="var(--klein)">Bloc n+2</text>
+      <text x="740" y="106" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">empreinte de n+1</text>
+    </g>
+    <text x="845" y="97" font-size="22" fill="var(--argent-fonce)">…</text>
+  </g>
+  <g stroke="var(--argent-fonce)" stroke-width="1.6" marker-end="url(#fl)" fill="none">
+    <path d="M140,91 L178,91"/><path d="M305,91 L343,91"/>
+    <path d="M470,91 L508,91"/><path d="M635,91 L673,91"/>
+  </g>
+  <!-- tentative de réécriture -->
+  <g>
+    <rect x="350" y="163" width="120" height="52" rx="3" fill="var(--or-voile)" stroke="var(--or)" stroke-width="1.8" stroke-dasharray="5 3"/>
+    <text x="410" y="194" text-anchor="middle" font-size="14.5" font-weight="600" fill="#8C6D12">Bloc n falsifié</text>
+    <path d="M410,140 L410,158" stroke="var(--or)" stroke-width="1.8" marker-end="url(#flo)" fill="none"/>
+    <text x="500" y="185" font-size="14.5" fill="#8C6D12">
+      → invalide les empreintes de n+1, n+2, …
+    </text>
+    <text x="500" y="207" font-size="14.5" font-weight="600" fill="#8C6D12">
+      → il faut TOUT recalculer, plus vite que le réseau
+    </text>
+  </g>
+  <text x="20" y="35" font-size="15" font-weight="600" fill="var(--prusse)">Chaque bloc scelle l'empreinte du précédent</text>
+</svg>
+
+::: {.retenir}
+Le coût d'une falsification croît avec sa **profondeur** dans la chaîne.
+D'où la règle empirique « attendre six confirmations » : après six blocs,
+réécrire coûte plus cher que ce qu'on peut voler.
+:::
+
+
+## La sécurité est un bien économique
+
+La preuve de travail rend la réécriture coûteuse en **électricité**, donc en euros.
+Ce coût est financé par la récompense versée aux mineurs :
+
+$$\underbrace{R_t}_{\text{récompense}} \;=\; \underbrace{S_t}_{\substack{\text{émission nouvelle} \\ \text{(dilution des détenteurs)}}} \;+\; \underbrace{F_t}_{\substack{\text{frais de transaction} \\ \text{(payés par les utilisateurs)}}}$$
+
+::: {.small}
+| Paramètre, août 2026 | Valeur |
+|---|---|
+| Récompense par bloc | **3,125 BTC** (depuis le halving d'avril 2024) |
+| Blocs par jour | ≈ 144 (un toutes les 10 minutes) |
+| Émission annuelle | ≈ **164 000 BTC**, soit **≈ 10 Md \$** à 63 000 \$ |
+| Part des **frais** dans le revenu des mineurs | **faible** — de l'ordre de quelques % |
+:::
+
+::: {.piege}
+**Le problème du budget de sécurité.** $S_t$ est divisé par deux tous les quatre
+ans et tend vers zéro. À terme, la sécurité doit être financée **uniquement** par
+$F_t$. Aujourd'hui les frais représentent une part faible du revenu des mineurs.
+
+**Personne ne sait si le marché des frais y suffira.** C'est un problème ouvert.
+:::
+
+
+## Preuve de travail contre preuve d'enjeu
+
+::: {.small}
+| | Preuve de travail — Bitcoin | Preuve d'enjeu — Ethereum depuis 2022 |
+|---|---|---|
+| Ressource engagée | Électricité, matériel | **Capital immobilisé** |
+| Coût de l'attaque | Acquérir la puissance de calcul | Acquérir le jeton, puis le perdre |
+| Coût récurrent | Élevé — l'énergie | Faible — coût d'opportunité |
+| Le détenteur perçoit… | rien | **un rendement** |
+| Analogie financière | Coût de production | **Dépôt à terme rémunéré** |
+:::
+
+::: {.retenir}
+La preuve d'enjeu transforme un jeton en **actif porteur d'un flux**.
+On peut donc écrire un modèle d'actualisation — ce qui est **impossible** pour le
+Bitcoin, qui ne verse rien à personne.
+:::
+
+::: {.piege}
+Mais le flux est faible. Rendement du *staking* Ethereum, mi-2026 :
+**≈ 2,8 % brut**, **≈ 2,0 à 2,2 % net** de frais de prestataire — en baisse
+depuis plus de 4 % début 2026, parce que le nombre de validateurs a augmenté.
+:::
+
+
+## Ethereum a des flux — mais ils s'assèchent
+
+Depuis l'EIP-1559 (août 2021), une partie des frais est **détruite**.
+Économiquement, c'est l'équivalent d'un rachat d'actions.
+
+$$\Delta\text{Offre}_t \;=\; \underbrace{\text{émission}_t}_{\text{récompenses de validation}} \;-\; \underbrace{\text{destruction}_t}_{\text{part des frais brûlée}}$$
+
+::: {.columns}
+::: {.column width="52%"}
+::: {.small}
+| Ethereum, mi-2026 | |
+|---|---|
+| Offre totale | ≈ 121,7 M ETH |
+| Part immobilisée (*staking*) | ≈ **32,5 %** |
+| Croissance de l'offre | **+0,85 % / an** |
+:::
+:::
+::: {.column width="48%"}
+::: {.piege}
+L'ETH est **redevenu inflationniste**.
+
+L'activité a migré vers les couches 2,
+où le coût de données est devenu
+quasi nul → la destruction s'est
+effondrée.
+:::
+:::
+:::
+
+::: {.retenir}
+Le modèle de valorisation par les flux **existe** pour l'ETH.
+Mais le flux est faible, volatil, et actuellement négatif net de dilution.
+Le dire est plus utile que de citer le modèle sans le chiffrer.
+:::
+
+
+## Le Bitcoin est-il de la monnaie ?
+
+::: {.small}
+| Fonction canonique | Verdict | Raison |
+|---|---|---|
+| **Unité de compte** | ❌ Non | Presque aucun prix n'est libellé en BTC. Même les commerçants qui l'acceptent affichent en monnaie nationale. |
+| **Intermédiaire des échanges** | ⚠️ Marginal | Existe, mais volume dérisoire face aux paiements traditionnels. |
+| **Réserve de valeur** | ⚠️ Discutable | Rendement long terme élevé, mais volatilité 3 à 4 fois celle des actions et repli de 50 à 80 % à chaque cycle. |
+:::
+
+::: {.piege}
+**Le Salvador, cas d'école.** Cours légal accordé au Bitcoin en septembre 2021,
+puis **abrogé le 29 janvier 2025** — condition posée par le FMI pour un prêt de
+1,4 Md \$. L'acceptation est redevenue volontaire et le Bitcoin n'est plus
+qualifié de « monnaie » dans le droit salvadorien.
+
+L'adoption effective était restée très faible pendant les trois années de cours légal.
+:::
+
+::: {.retenir}
+Le Bitcoin échoue précisément sur la fonction la plus contraignante :
+**l'unité de compte**. Conséquence opérationnelle : le traiter comme un **actif**.
+C'est d'ailleurs ce que font la comptabilité et la fiscalité.
+:::
+
+
+## Cinq familles, cinq logiques de prix
+
+<svg class="schema" viewBox="0 0 980 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Carte des cinq familles de crypto-actifs">
+  <!-- axes -->
+  <line x1="90" y1="345" x2="930" y2="345" stroke="var(--argent-fonce)" stroke-width="1.4"/>
+  <line x1="90" y1="345" x2="90"  y2="35"  stroke="var(--argent-fonce)" stroke-width="1.4"/>
+  <text x="930" y="372" text-anchor="end" font-size="14.5" fill="var(--argent-fonce)">
+    Existence d'un flux actualisable  →
+  </text>
+  <text x="78" y="35" text-anchor="end" font-size="14.5" fill="var(--argent-fonce)" transform="rotate(-90 78 35)">
+    Adossement à un actif  →
+  </text>
+
+  <!-- quadrant labels -->
+  <text x="105" y="58" font-size="12.5" fill="var(--argent)">adossé, sans flux</text>
+  <text x="925" y="58" font-size="12.5" fill="var(--argent)" text-anchor="end">adossé, avec flux</text>
+  <text x="105" y="335" font-size="12.5" fill="var(--argent)">ni adossement ni flux</text>
+
+  <!-- Bitcoin -->
+  <g>
+    <circle cx="185" cy="300" r="34" fill="var(--klein-voile)" stroke="var(--klein)" stroke-width="2"/>
+    <text x="185" y="305" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--klein)">BTC</text>
+    <text x="185" y="358" text-anchor="middle" font-size="13" fill="var(--prusse)">Actif à offre rigide</text>
+    <text x="185" y="375" text-anchor="middle" font-size="11.5" fill="var(--argent-fonce)">rareté + effet de réseau</text>
+  </g>
+  <!-- Gouvernance -->
+  <g>
+    <circle cx="420" cy="270" r="34" fill="#F6F7F9" stroke="var(--argent-fonce)" stroke-width="2"/>
+    <text x="420" y="268" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--prusse)">UNI</text>
+    <text x="420" y="284" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--prusse)">AAVE</text>
+    <text x="420" y="330" text-anchor="middle" font-size="13" fill="var(--prusse)">Token de gouvernance</text>
+    <text x="420" y="347" text-anchor="middle" font-size="11.5" fill="var(--argent-fonce)">droit de vote, parfois revenus</text>
+  </g>
+  <!-- Ethereum -->
+  <g>
+    <circle cx="660" cy="235" r="34" fill="var(--klein-voile)" stroke="var(--klein)" stroke-width="2"/>
+    <text x="660" y="240" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--klein)">ETH</text>
+    <text x="660" y="295" text-anchor="middle" font-size="13" fill="var(--prusse)">Token de plateforme</text>
+    <text x="660" y="312" text-anchor="middle" font-size="11.5" fill="var(--argent-fonce)">frais brûlés + staking</text>
+  </g>
+  <!-- Stablecoin -->
+  <g>
+    <circle cx="245" cy="115" r="34" fill="var(--prusse-voile)" stroke="var(--prusse)" stroke-width="2"/>
+    <text x="245" y="113" text-anchor="middle" font-size="12" font-weight="700" fill="var(--prusse)">USDT</text>
+    <text x="245" y="128" text-anchor="middle" font-size="12" font-weight="700" fill="var(--prusse)">USDC</text>
+    <text x="245" y="175" text-anchor="middle" font-size="13" fill="var(--prusse)">Stablecoin adossé</text>
+    <text x="245" y="192" text-anchor="middle" font-size="11.5" fill="var(--argent-fonce)">c'est un PASSIF</text>
+  </g>
+  <!-- RWA -->
+  <g>
+    <circle cx="810" cy="105" r="34" fill="var(--or-voile)" stroke="var(--or)" stroke-width="2"/>
+    <text x="810" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#8C6D12">RWA</text>
+    <text x="810" y="165" text-anchor="middle" font-size="13" fill="var(--prusse)">Actif réel tokenisé</text>
+    <text x="810" y="182" text-anchor="middle" font-size="11.5" fill="var(--argent-fonce)">celle du sous-jacent</text>
+  </g>
+</svg>
+
+::: {.retenir}
+Un stablecoin et un token de gouvernance n'ont **rien** en commun sur le plan
+financier — sinon le registre sur lequel ils circulent.
+:::
+
+
+## Ce que « fintech » recouvre au-delà de la crypto
+
+::: {.columns}
+::: {.column width="50%"}
+### Paiements
+
+- Virement instantané — obligatoire dans l'UE depuis 2025
+- Portefeuilles électroniques, néobanques
+- Stablecoins comme **rail de règlement transfrontalier**
+:::
+::: {.column width="50%"}
+### Marchés de capitaux
+
+- **Tokenisation de titres** — fonds monétaires, obligations
+- Règlement-livraison quasi instantané
+- Monnaie numérique de banque centrale
+:::
+:::
+
+. . .
+
+::: {.retenir}
+Le point commun n'est pas la blockchain. C'est la **compression du délai et du
+coût de règlement**.
+
+La question que se pose un régulateur n'est pas « est-ce décentralisé ? » mais
+**« qui porte le risque si ça casse ? »**
+:::
+
+
+# 2 — L'écosystème financier
+
+## Où se traite un crypto-actif ?
+
+<svg class="schema" viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plateforme centralisée contre plateforme décentralisée">
+  <!-- CEX -->
+  <g>
+    <rect x="30" y="30" width="430" height="250" rx="4" fill="var(--prusse-voile)" stroke="var(--prusse)" stroke-width="1.6"/>
+    <text x="245" y="60" text-anchor="middle" font-size="17" font-weight="700" fill="var(--prusse)">Plateforme centralisée (CEX)</text>
+    <text x="245" y="81" text-anchor="middle" font-size="13" fill="var(--argent-fonce)">Binance, Coinbase, Kraken</text>
+
+    <rect x="70" y="105" width="105" height="46" rx="3" fill="#FFFFFF" stroke="var(--argent-fonce)"/>
+    <text x="122" y="133" text-anchor="middle" font-size="13.5" fill="var(--encre)">Vous</text>
+
+    <rect x="315" y="105" width="105" height="46" rx="3" fill="#FFFFFF" stroke="var(--argent-fonce)"/>
+    <text x="367" y="126" text-anchor="middle" font-size="13" fill="var(--encre)">Carnet</text>
+    <text x="367" y="143" text-anchor="middle" font-size="13" fill="var(--encre)">d'ordres</text>
+
+    <rect x="185" y="105" width="120" height="46" rx="3" fill="var(--prusse)" stroke="var(--prusse)"/>
+    <text x="245" y="126" text-anchor="middle" font-size="13" font-weight="600" fill="#FFFFFF">La plateforme</text>
+    <text x="245" y="143" text-anchor="middle" font-size="12" fill="#C7D4DD">détient les clés</text>
+
+    <line x1="175" y1="128" x2="182" y2="128" stroke="var(--argent-fonce)" stroke-width="1.5"/>
+    <line x1="305" y1="128" x2="312" y2="128" stroke="var(--argent-fonce)" stroke-width="1.5"/>
+
+    <text x="245" y="192" text-anchor="middle" font-size="14.5" font-weight="600" fill="var(--prusse)">Vous détenez une CRÉANCE</text>
+    <text x="245" y="215" text-anchor="middle" font-size="13.5" fill="var(--encre)">Risque = défaut de la contrepartie</text>
+    <text x="245" y="240" text-anchor="middle" font-size="13" fill="#8C6D12">FTX, nov. 2022 : ≈ 8,7 Md $ manquants</text>
+    <text x="245" y="262" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">Sous MiCA : agrément CASP obligatoire</text>
+  </g>
+  <!-- DEX -->
+  <g>
+    <rect x="520" y="30" width="430" height="250" rx="4" fill="var(--klein-voile)" stroke="var(--klein)" stroke-width="1.6"/>
+    <text x="735" y="60" text-anchor="middle" font-size="17" font-weight="700" fill="var(--klein)">Plateforme décentralisée (DEX)</text>
+    <text x="735" y="81" text-anchor="middle" font-size="13" fill="var(--argent-fonce)">Uniswap, Curve</text>
+
+    <rect x="560" y="105" width="105" height="46" rx="3" fill="#FFFFFF" stroke="var(--argent-fonce)"/>
+    <text x="612" y="126" text-anchor="middle" font-size="13.5" fill="var(--encre)">Vous</text>
+    <text x="612" y="143" text-anchor="middle" font-size="11.5" fill="var(--argent-fonce)">clés en main</text>
+
+    <rect x="700" y="105" width="205" height="46" rx="3" fill="var(--klein)" stroke="var(--klein)"/>
+    <text x="802" y="126" text-anchor="middle" font-size="13" font-weight="600" fill="#FFFFFF">Contrat intelligent</text>
+    <text x="802" y="143" text-anchor="middle" font-size="12" fill="#C9D5F2">réserve x · y = k</text>
+
+    <line x1="665" y1="128" x2="697" y2="128" stroke="var(--argent-fonce)" stroke-width="1.5"/>
+
+    <text x="735" y="192" text-anchor="middle" font-size="14.5" font-weight="600" fill="var(--klein)">Vous détenez l'ACTIF</text>
+    <text x="735" y="215" text-anchor="middle" font-size="13.5" fill="var(--encre)">Risque = bug du contrat, erreur de l'utilisateur</text>
+    <text x="735" y="240" text-anchor="middle" font-size="13" fill="var(--argent-fonce)">Pas de carnet d'ordres, pas de contrepartie humaine</text>
+    <text x="735" y="262" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">Statut réglementaire encore incertain</text>
+  </g>
+</svg>
+
+::: {.retenir}
+Sur un CEX, votre risque est celui d'un **dépôt bancaire non garanti**.
+Sur un DEX, celui d'un **bug logiciel**. Aucun des deux n'est le risque de marché.
+:::
+
+
+## Le teneur de marché automatisé
+
+Une réserve de deux actifs, telle que le produit reste constant :
+
+::: {.formule-cle}
+$$x \cdot y = k$$
+:::
+
+Le prix marginal est la pente de la courbe. En différentiant à $k$ constant :
+
+$$y\,dx + x\,dy = 0 \;\;\Longrightarrow\;\; p \;=\; -\frac{dy}{dx} \;=\; \frac{y}{x}$$
+
+. . .
+
+<svg class="schema" viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Courbe x fois y égale k">
+  <line x1="80" y1="215" x2="820" y2="215" stroke="var(--argent-fonce)" stroke-width="1.3"/>
+  <line x1="80" y1="215" x2="80"  y2="20"  stroke="var(--argent-fonce)" stroke-width="1.3"/>
+  <text x="820" y="240" text-anchor="end" font-size="14" fill="var(--argent-fonce)">x — quantité de l'actif X</text>
+  <text x="66" y="22" text-anchor="end" font-size="14" fill="var(--argent-fonce)" transform="rotate(-90 66 22)">y</text>
+  <path d="M120,35 C 240,150 330,185 420,196 C 540,208 680,211 800,212"
+        fill="none" stroke="var(--klein)" stroke-width="2.6"/>
+  <text x="690" y="185" font-size="15" font-weight="600" fill="var(--klein)">x · y = k</text>
+  <!-- point initial -->
+  <circle cx="255" cy="147" r="6" fill="var(--prusse)"/>
+  <text x="228" y="132" font-size="13.5" fill="var(--prusse)" text-anchor="end">état initial</text>
+  <line x1="255" y1="147" x2="255" y2="215" stroke="var(--argent)" stroke-dasharray="3 3"/>
+  <line x1="80"  y1="147" x2="255" y2="147" stroke="var(--argent)" stroke-dasharray="3 3"/>
+  <!-- point après achat -->
+  <circle cx="160" cy="72" r="6" fill="var(--or)"/>
+  <text x="186" y="60" font-size="13.5" fill="#8C6D12">après un achat de X</text>
+  <line x1="160" y1="72" x2="160" y2="215" stroke="var(--or)" stroke-dasharray="3 3" opacity=".6"/>
+  <line x1="80"  y1="72" x2="160" y2="72"  stroke="var(--or)" stroke-dasharray="3 3" opacity=".6"/>
+  <text x="300" y="105" font-size="13.5" fill="var(--encre)">x diminue, y augmente →</text>
+  <text x="300" y="125" font-size="13.5" font-weight="600" fill="var(--encre)">le prix p = y/x MONTE</text>
+</svg>
+
+::: {.retenir}
+Le prix se forme **mécaniquement**, sans carnet d'ordres et sans contrepartie
+humaine. Toute transaction déplace le prix — il n'y a pas de « prix affiché »
+indépendant de la taille de l'ordre.
+:::
+
+
+## La perte impermanente
+
+Le prix relatif passe de $p_0$ à $p_1 = \rho\, p_0$. Les nouvelles réserves sont
+$x_1 = x_0/\sqrt\rho$ et $y_1 = y_0\sqrt\rho$. En comparant à une simple détention :
+
+::: {.formule-cle}
+$$\frac{V_{\text{réserve}}}{V_{\text{détention}}} \;=\; \frac{2\sqrt\rho}{1+\rho} \;\le\; 1$$
+:::
+
+::: {.columns}
+::: {.column width="42%"}
+::: {.xsmall}
+| $\rho$ | Perte |
+|---|---|
+| 1,25 | −0,6 % |
+| 1,5 | −2,0 % |
+| **2** | **−5,7 %** |
+| 4 | −20,0 % |
+| 5 | −25,5 % |
+:::
+:::
+::: {.column width="58%"}
+::: {.retenir}
+Le fournisseur de liquidité a un **gamma négatif** : sa valeur est concave dans le
+prix. Il encaisse une prime — les frais — et perd quand le sous-jacent bouge fort,
+**dans les deux sens**.
+
+C'est un **straddle vendu**.
+:::
+:::
+:::
+
+::: {.piege}
+Le nom est trompeur. La perte n'est « impermanente » que si le prix **revient**.
+Sinon elle est parfaitement permanente.
+:::
+
+
+## Le contrat perpétuel et la volatilité endogène
+
+Un futur **sans échéance**. Pour l'ancrer au comptant, un paiement périodique
+circule entre longs et courts, fonction de l'écart :
+
+$$f_t \;\propto\; P_t^{\text{perp}} - P_t^{\text{comptant}}$$
+
+::: {.small}
+$f_t > 0$ (longs majoritaires) → **les longs paient les courts** · $f_t < 0$ → l'inverse
+:::
+
+<svg class="schema" viewBox="0 0 900 205" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cascade de liquidations">
+  <defs>
+    <marker id="fc" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto">
+      <path d="M0,0 L0,6.4 L9,3.2 z" fill="var(--or)"/>
+    </marker>
+  </defs>
+  <g font-size="13.5" text-anchor="middle">
+    <g><rect x="30"  y="70" width="150" height="58" rx="3" fill="var(--or-voile)" stroke="var(--or)" stroke-width="1.6"/>
+       <text x="105" y="95" fill="#8C6D12" font-weight="600">Le prix baisse</text>
+       <text x="105" y="114" fill="var(--argent-fonce)" font-size="12">choc initial</text></g>
+    <g><rect x="235" y="70" width="165" height="58" rx="3" fill="var(--or-voile)" stroke="var(--or)" stroke-width="1.6"/>
+       <text x="317" y="95" fill="#8C6D12" font-weight="600">Marges insuffisantes</text>
+       <text x="317" y="114" fill="var(--argent-fonce)" font-size="12">positions à levier</text></g>
+    <g><rect x="455" y="70" width="165" height="58" rx="3" fill="var(--or-voile)" stroke="var(--or)" stroke-width="1.6"/>
+       <text x="537" y="95" fill="#8C6D12" font-weight="600">Liquidation forcée</text>
+       <text x="537" y="114" fill="var(--argent-fonce)" font-size="12">vente automatique</text></g>
+    <g><rect x="675" y="70" width="165" height="58" rx="3" fill="var(--or-voile)" stroke="var(--or)" stroke-width="1.6"/>
+       <text x="757" y="95" fill="#8C6D12" font-weight="600">Le prix rebaisse</text>
+       <text x="757" y="114" fill="var(--argent-fonce)" font-size="12">pression vendeuse</text></g>
+  </g>
+  <g stroke="var(--or)" stroke-width="1.8" fill="none" marker-end="url(#fc)">
+    <path d="M180,99 L230,99"/><path d="M400,99 L450,99"/><path d="M620,99 L670,99"/>
+  </g>
+  <path d="M757,132 C757,175 105,178 105,133" stroke="var(--or)" stroke-width="1.8"
+        fill="none" marker-end="url(#fc)" stroke-dasharray="6 4"/>
+  <text x="430" y="196" text-anchor="middle" font-size="13.5" font-weight="600" fill="#8C6D12">
+    boucle de rétroaction — 1,8 Md $ liquidés en 24 h en juin 2026
+  </text>
+</svg>
+
+::: {.retenir}
+Une partie de la volatilité crypto est **endogène** : produite par la structure du
+marché, pas par l'arrivée d'information. C'est un point que nous retrouverons en
+séance 2.
+:::
+
+
+## Les stablecoins : la vraie infrastructure
+
+<svg class="schema" viewBox="0 0 980 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bilan simplifié d'un émetteur de stablecoin">
+  <text x="30" y="26" font-size="15" font-weight="700" fill="var(--prusse)">Bilan simplifié de l'émetteur</text>
+  <rect x="30" y="42" width="410" height="160" fill="#FFFFFF" stroke="var(--prusse)" stroke-width="1.6"/>
+  <line x1="235" y1="42" x2="235" y2="202" stroke="var(--prusse)" stroke-width="1.6"/>
+  <line x1="30"  y1="72" x2="440" y2="72"  stroke="var(--prusse)" stroke-width="1.2"/>
+  <text x="132" y="63" text-anchor="middle" font-size="14" font-weight="600" fill="var(--prusse)">ACTIF — réserves</text>
+  <text x="337" y="63" text-anchor="middle" font-size="14" font-weight="600" fill="var(--prusse)">PASSIF</text>
+  <g font-size="13.5" fill="var(--encre)">
+    <text x="45" y="100">Bons du Trésor</text>
+    <text x="45" y="126">Dépôts bancaires</text>
+    <text x="45" y="152">Prises en pension</text>
+    <text x="45" y="186" font-size="12.5" fill="var(--argent-fonce)">≈ un fonds monétaire</text>
+    <text x="250" y="100" font-weight="600" fill="var(--klein)">Jetons en circulation</text>
+    <text x="250" y="124" font-size="12.5" fill="var(--argent-fonce)">remboursables à 1 $</text>
+    <text x="250" y="158">Fonds propres</text>
+    <text x="250" y="186" font-size="12.5" fill="var(--argent-fonce)">exigés par MiCA</text>
+  </g>
+  <!-- deux modes de défaillance -->
+  <g font-size="13.5">
+    <rect x="500" y="42" width="450" height="72" rx="3" fill="var(--or-voile)" stroke="var(--or)" stroke-width="1.5"/>
+    <text x="515" y="65" font-weight="700" fill="#8C6D12">① Défaillance de l'ACTIF</text>
+    <text x="515" y="86" fill="var(--encre)">Les réserves perdent de la valeur, ou deviennent</text>
+    <text x="515" y="104" fill="var(--encre)">inaccessibles → <tspan font-weight="600">USDC / SVB, mars 2023</tspan></text>
+
+    <rect x="500" y="130" width="450" height="72" rx="3" fill="var(--or-voile)" stroke="var(--or)" stroke-width="1.5"/>
+    <text x="515" y="153" font-weight="700" fill="#8C6D12">② Absence d'ACTIF</text>
+    <text x="515" y="174" fill="var(--encre)">Il n'y a pas de réserve : le peg repose sur un</text>
+    <text x="515" y="192" fill="var(--encre)">arbitrage circulaire → <tspan font-weight="600">UST / Terra, mai 2022</tspan></text>
+  </g>
+</svg>
+
+::: {.retenir}
+Un stablecoin est un **passif**. Sa solidité est celle de son actif.
+C'est de l'analyse de bilan, pas de la technologie.
+:::
+
+
+## Finance décentralisée et tokenisation
+
+::: {.columns}
+::: {.column width="50%"}
+### Ce qui tient
+
+- **Prêt sur-garanti** : emprunter 100 \$ contre 150 \$ de collatéral, liquidation automatique
+- Échange automatisé
+- Marché monétaire à taux flottant
+:::
+::: {.column width="50%"}
+### Ce qui ne tient pas
+
+- Rendements financés par l'**émission de jetons** → dilution, non soutenable
+- Risque de bug de contrat
+- Empilement de protocoles → risque systémique opaque
+:::
+:::
+
+::: {.small}
+| | Mi-2026 |
+|---|---|
+| Valeur immobilisée en DeFi | ≈ **72 Md \$**, **−37 %** sur l'année |
+| Actifs réels tokenisés | ≈ **32 Md \$**, contre ≈ 12 Md \$ un an plus tôt |
+:::
+
+::: {.retenir}
+La sur-garantie résout le risque de crédit **sans information sur l'emprunteur**.
+C'est réellement nouveau. Mais on ne finance pas l'économie réelle avec du crédit
+exigeant 150 % de collatéral liquide.
+:::
+
+
+## Le cadre réglementaire européen : MiCA
+
+<svg class="schema" viewBox="0 0 980 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Frise chronologique MiCA">
+  <line x1="60" y1="88" x2="930" y2="88" stroke="var(--argent)" stroke-width="3"/>
+  <g font-size="13.5" text-anchor="middle">
+    <g><circle cx="150" cy="88" r="8" fill="var(--prusse)"/>
+       <text x="150" y="62" font-weight="700" fill="var(--prusse)">30 juin 2024</text>
+       <text x="150" y="118" fill="var(--encre)">Volet stablecoins</text>
+       <text x="150" y="135" font-size="12" fill="var(--argent-fonce)">titres III et IV</text></g>
+    <g><circle cx="400" cy="88" r="8" fill="var(--prusse)"/>
+       <text x="400" y="62" font-weight="700" fill="var(--prusse)">30 déc. 2024</text>
+       <text x="400" y="118" fill="var(--encre)">Volet prestataires</text>
+       <text x="400" y="135" font-size="12" fill="var(--argent-fonce)">agrément CASP</text></g>
+    <g><circle cx="670" cy="88" r="10" fill="var(--or)"/>
+       <text x="670" y="62" font-weight="700" fill="#8C6D12">1ᵉʳ juillet 2026</text>
+       <text x="670" y="118" font-weight="600" fill="#8C6D12">Fin du transitoire</text>
+       <text x="670" y="135" font-size="12" fill="var(--argent-fonce)">agréé, ou on arrête</text></g>
+    <g><circle cx="880" cy="88" r="8" fill="var(--klein)"/>
+       <text x="880" y="62" font-weight="700" fill="var(--klein)">2026</text>
+       <text x="880" y="118" fill="var(--encre)">&gt; 170 agréés</text>
+       <text x="880" y="135" font-size="12" fill="var(--argent-fonce)">passeport UE</text></g>
+  </g>
+</svg>
+
+::: {.small}
+| | |
+|---|---|
+| **Deux catégories** | **EMT** — adossé à une monnaie officielle · **ART** — adossé à un panier |
+| **Obligations** | Réserves auditées, fonds propres, **ségrégation des actifs clients**, document d'information |
+| **Interdits** | Stablecoins **algorithmiques** · **rémunération** des détenteurs de stablecoins |
+| **États-Unis** | *GENIUS Act* (2025) — cadre fédéral au-dessus de 10 Md \$ d'encours, réserves à 100 %, audits |
+:::
+
+::: {.retenir}
+MiCA régule **l'émission et l'intermédiation**, pas le protocole.
+Un régulateur ne peut pas sanctionner Bitcoin ; il sanctionne l'entreprise qui
+vend du Bitcoin à un résident européen.
+:::
+
+
+## Récapitulatif de la partie 2
+
+::: {.retenir}
+1. Le risque de **contrepartie** (CEX) et le risque de **code** (DEX) sont distincts du risque de marché.
+2. Le teneur de marché automatisé fait du fournisseur de liquidité un **vendeur de volatilité** — gamma négatif, perte quadratique.
+3. Le taux de financement est le prix observable du levier ; les cascades rendent la volatilité partiellement **endogène**.
+4. Un stablecoin est un **passif**. Deux modes de défaillance : l'actif se dégrade (USDC/SVB), ou il n'y a pas d'actif (UST).
+5. MiCA régule les **intermédiaires**. L'interdiction de rémunérer est **prudentielle**, pas technique.
+:::
+
+
+# 3 — TP 0 et étude de cas
+
+## Le panier du fil rouge
+
+::: {.small}
+| Actif | Ticker | Pourquoi lui |
+|---|---|---|
+| **Bitcoin** | `BTC-USD` | Le crypto-actif « macro », détenu en ETF par des institutionnels |
+| **Ethereum** | `ETH-USD` | Plateforme avec flux — frais brûlés et staking |
+| **Solana** | `SOL-USD` | Altcoin à bêta élevé — le comportement extrême |
+| **S&P 500** | `^GSPC` | Référence actions |
+| **Or** | `GC=F` | Référence « valeur refuge », pour tester le récit de l'or numérique |
+:::
+
+Période : **2018-01-01 → aujourd'hui**. Trois cycles complets.
+
+::: {.question}
+Pourquoi seulement cinq actifs, et pas cinquante ?
+:::
+
+
+## Anatomie du krach de 2026
+
+::: {.columns}
+::: {.column width="46%"}
+::: {.small}
+| | |
+|---|---|
+| Pic historique | ≈ 126 200 \$ — oct. 2025 |
+| Point bas | ≈ 61 200 \$ — juin 2026 |
+| Baisse | **≈ −50 %** |
+| Capitalisation perdue | > 800 Md \$ |
+| Liquidations en 24 h | ≈ 1,8 Md \$ |
+| Ethereum | ≈ −35 % |
+:::
+:::
+::: {.column width="54%"}
+**Quatre facteurs avancés**
+
+1. Politique monétaire restrictive
+2. Tensions géopolitiques
+3. Vente d'un grand détenteur institutionnel
+4. **La plus longue série de sorties d'ETF jamais enregistrée**
+:::
+:::
+
+::: {.retenir}
+Tous les marchés baissiers crypto antérieurs avaient une cause **interne** au
+secteur — Mt. Gox, ICO, Terra, FTX. Celui de 2026 est **institutionnel** :
+rachats d'ETF, débouclage de positions de base, arbitrages de portefeuille.
+:::
+
+
+## Débat cadré — 15 minutes
+
+::: {.columns}
+::: {.column width="50%"}
+::: {.definition}
+**Groupe A**
+
+« L'arrivée des ETF a **rendu le
+Bitcoin investissable** : liquidité,
+conservation régulée, accès
+institutionnel. »
+:::
+:::
+::: {.column width="50%"}
+::: {.definition}
+**Groupe B**
+
+« L'arrivée des ETF a **détruit sa
+raison d'être** : il est devenu un actif
+de risque corrélé, sans bénéfice de
+diversification. »
+:::
+:::
+:::
+
+::: {.piege}
+**Contrainte** : chaque argument doit être **testable sur données**.
+On note les hypothèses au tableau — elles seront vérifiées en séance 3.
+:::
+
+::: {.small}
+6 minutes de préparation · 4 minutes par groupe · 1 minute de synthèse
+:::
+
+
+## TP 0 — vos premières données
+
+Ouvrir `02-TP/TP0-prise-en-main.ipynb`
+
+::: {.small}
+| | Objectif | Priorité |
+|---|---|---|
+| 1 | Environnement fonctionnel | ⬤ |
+| 2 | Charger le panier et **contrôler la qualité des données** | ⬤ |
+| 3 | Prix en base 100, échelle logarithmique | ⬤ |
+| 4 | Rendements logarithmiques — et l'écart avec l'arithmétique | ⬤ |
+| 5 | Les 10 pires journées du Bitcoin — que faisait le S&P 500 ? | ○ |
+| 6 | Sauvegarder le panier pour les séances suivantes | ○ |
+:::
+
+::: {.retenir}
+En binômes. ⬤ = à faire en séance · ○ = finissable chez vous.
+Si l'API échoue : `03-Data/backup/panier.csv`.
+:::
+
+
+## À rendre pour la séance 2
+
+**Fiche d'actif — 1 page, individuelle.**
+Un crypto-actif au choix, **hors Bitcoin et Ethereum**.
+
+::: {.small}
+1. À quelle **famille** appartient-il ? (les cinq de la partie 1)
+2. Quel est son **mécanisme d'offre** ? Fixe, inflationniste, déflationniste ?
+3. **D'où vient sa valeur** — un flux, un usage, une rareté, une promesse ?
+4. Quels sont ses **trois principaux risques** ?
+5. Quelle **source** avez-vous utilisée, et **qui la finance** ?
+:::
+
+::: {.piege}
+La question 5 est notée comme les quatre autres.
+:::
+
+
+## Références de la séance {.smaller}
+
+::: {.xsmall}
+**Socle — à lire au moins une fois**
+
+- **Nakamoto, S.** (2008), *Bitcoin: A Peer-to-Peer Electronic Cash System*. Neuf pages. La section 11 contient le calcul de probabilité de rattrapage.
+- **Narayanan, A. et al.** (2016), *Bitcoin and Cryptocurrency Technologies*, Princeton UP — chapitres 1 à 3.
+
+**Académique**
+
+- **Baur, D., Hong, K., Lee, A.** (2018), « Bitcoin: Medium of Exchange or Speculative Assets? », *J. of Int. Fin. Markets*, 54, 177-189.
+- **Makarov, I., Schoar, A.** (2020), « Trading and Arbitrage in Cryptocurrency Markets », *JFE*, 135(2), 293-319.
+- **Cong, L. W., Li, Y., Wang, N.** (2021), « Tokenomics: Dynamic Adoption and Valuation », *RFS*, 34(3), 1105-1155.
+- **Carlsten, M. et al.** (2016), « On the Instability of Bitcoin Without the Block Reward », *ACM CCS* — le problème du budget de sécurité.
+- **Diamond, D., Dybvig, P.** (1983), « Bank Runs, Deposit Insurance, and Liquidity », *JPE*, 91(3) — pour lire l'épisode USDC de mars 2023.
+
+**Institutionnel**
+
+- **AMF** — dossier « Règlement européen MiCA ».
+- **ESMA** — orientations d'application de MiCA.
+- **BCE** — dossier « Euro numérique », communiqués du projet pilote.
+- **FMI** (2025), *El Salvador — Country Report* — sur l'abrogation du cours légal.
+- **BRI**, *Annual Economic Report* — chapitres consacrés à la finance numérique.
+
+**Données, toutes gratuites**
+
+CoinGecko · DefiLlama · rwa.xyz · Farside Investors (flux d'ETF) · FRED
+:::
+

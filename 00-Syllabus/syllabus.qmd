@@ -1,0 +1,323 @@
+---
+title: "Cryptomonnaies et Fintech"
+subtitle: "Volet quantitatif — 9 h | M2 MBFA, parcours Finance"
+author: "Bilel Sanhaji — Université Paris 8"
+date: last-modified
+date-format: "MMMM YYYY"
+lang: fr
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    number-sections: true
+    embed-resources: true
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=2.5cm
+    documentclass: scrartcl
+---
+
+## Présentation générale
+
+cet enseignement de 9 h traite les crypto-actifs comme une **classe d'actifs à part
+entière**, avec ses instruments, sa microstructure, son cadre réglementaire et,
+surtout, ses propriétés statistiques particulières.
+
+Le parti pris est celui de la **finance quantitative appliquée** : après une séance
+de cadrage qui donne aux étudiants le vocabulaire et les mécanismes indispensables,
+deux séances sont consacrées au traitement économétrique de données réelles. À la
+sortie, un étudiant doit pouvoir dire *ce qu'est* un stablecoin, *pourquoi* la VaR
+gaussienne échoue sur le Bitcoin, et *le démontrer* sur un notebook reproductible.
+
+::: {.callout-note}
+## Positionnement dans le module
+Le module « Cryptomonnaies et Fintech » représente 18 h au total. Cet enseignement en couvre
+9 ; les 9 h restantes sont assurées par un second intervenant. l'enseignement est conçu
+pour être **autoportant** : il ne suppose aucun contenu du second bloc et n'en
+conditionne aucun.
+:::
+
+### Informations pratiques
+
+| | |
+|---|---|
+| **Public** | M2 Monnaie, Banque, Finance, Assurance — parcours Finance |
+| **Volume** | 9 h — 3 séances de 3 × 50 min |
+| **Format** | Cours magistral appliqué + travaux pratiques sur machine |
+| **Prérequis théoriques** | Séries temporelles (stationnarité, autocorrélation, rendements) ; statistique inférentielle (tests d'hypothèses) |
+| **Prérequis techniques** | Python : manipulation de `DataFrame` pandas, tracé matplotlib |
+| **Logiciels** | Python ≥ 3.10, JupyterLab, `pandas`, `numpy`, `scipy`, `statsmodels`, `yfinance` |
+| **Matériel** | Ordinateur portable **obligatoire** (les TP se font en séance) |
+| **Dépôt du cours** | Notebooks, données et slides fournis en début de séance |
+
+---
+
+## Objectifs pédagogiques
+
+À l'issue de cet enseignement, l'étudiant est capable de :
+
+**Comprendre et situer**
+
+1. Distinguer les grandes familles de crypto-actifs (actif rare, token de
+   plateforme, stablecoin, token de gouvernance, actif tokenisé) et expliquer que
+   chacune relève d'une **logique de valorisation différente**.
+2. Décrire le fonctionnement d'un marché crypto : CEX vs DEX, teneur de marché
+   automatisé, contrat perpétuel et taux de financement, cascade de liquidations.
+3. Restituer l'architecture réglementaire européenne (MiCA) et américaine
+   (GENIUS Act) et en tirer les conséquences pour un investisseur institutionnel.
+
+**Diagnostiquer**
+
+4. Établir empiriquement les faits stylisés d'une série de rendements crypto :
+   leptokurticité, asymétrie, agrégation de la volatilité, instabilité des
+   corrélations — et les comparer aux actifs traditionnels.
+5. Tester l'hypothèse de marche aléatoire (ADF, KPSS, ratio de variance de
+   Lo–MacKinlay) et **interpréter correctement** un rejet : prédictibilité
+   statistique n'est pas opportunité économique.
+
+**Mesurer et critiquer**
+
+6. Estimer une volatilité par trois méthodes (réalisée, glissante, EWMA) et
+   justifier le choix de la fenêtre et du facteur de décroissance.
+7. Calculer une VaR et une *Expected Shortfall* selon quatre approches
+   (historique, gaussienne, Student-*t*, Monte Carlo) et **backtester** ces mesures
+   (tests de Kupiec et de Christoffersen).
+8. Produire une analyse quantitative reproductible et en exposer honnêtement les
+   limites.
+
+---
+
+## Progression des trois séances
+
+| | Séance | Question directrice | Livrable étudiant |
+|---|---|---|---|
+| **S1** | Anatomie d'une classe d'actifs | *De quoi parle-t-on, et comment ce marché fonctionne-t-il ?* | Fiche d'actif (1 page) + panier constitué |
+| **S2** | Le crypto-actif comme objet statistique | *En quoi ces séries diffèrent-elles des actions ?* | Note de diagnostic empirique (2 pages) |
+| **S3** | Mesurer et backtester le risque | *Combien puis-je perdre, et mon modèle le sait-il ?* | Rapport de risque + lancement du projet |
+
+Chaque séance suit la même structure en trois parties de 50 minutes :
+
+- **Partie 1 — magistral** : les concepts, avec démonstrations chiffrées ;
+- **Partie 2 — magistral dialogué** : approfondissement, cas réel, débat cadré ;
+- **Partie 3 — TP sur machine** : les étudiants codent, en binômes, et rendent.
+
+---
+
+## Programme détaillé
+
+### Séance 1 — Anatomie d'une classe d'actifs
+
+**Partie 1 (50 min) — De la monnaie au token**
+
+- Le problème que le Bitcoin prétend résoudre : le double dépense sans tiers de
+  confiance. Blockchain, minage, preuve de travail vs preuve d'enjeu — traités
+  comme un **mécanisme économique** (coût marginal de production, sécurité comme
+  bien économique), pas comme un objet technique.
+- Le Bitcoin est-il de la monnaie ? Confrontation aux trois fonctions
+  (unité de compte, réserve de valeur, intermédiaire des échanges). Réponse
+  argumentée : non pour la première, discutable pour la seconde.
+- **Taxonomie opérationnelle** en cinq familles, chacune avec sa logique de prix :
+  actif à offre rigide (BTC), token de plateforme avec cash-flows (ETH : frais de
+  transaction brûlés + rendement du *staking*), stablecoin (passif adossé),
+  token de gouvernance, actif du monde réel tokenisé.
+- Ce que « fintech » recouvre au-delà de la crypto : paiements, tokenisation des
+  titres, monnaie numérique de banque centrale.
+
+**Partie 2 (50 min) — L'écosystème financier**
+
+- Microstructure : plateformes centralisées vs décentralisées ; teneur de marché
+  automatisé et formule à produit constant $x \cdot y = k$ ; **perte impermanente**
+  dérivée et interprétée comme position vendeuse de volatilité.
+- Dérivés : contrat perpétuel, taux de financement comme prix du levier, mécanique
+  des cascades de liquidations. Pourquoi la volatilité crypto est en partie
+  *endogène* au marché.
+- Stablecoins : mécanique du *peg*, réserves, deux cas d'école
+  (dépeg de l'USDC en mars 2023, effondrement de l'UST en mai 2022).
+- Finance décentralisée : prêt collatéralisé sur-garanti, rendement, risque de
+  contrat intelligent. Tokenisation d'actifs réels.
+- Cadre réglementaire : MiCA (agrément CASP, catégories ART/EMT, passeport
+  européen), GENIUS Act aux États-Unis, euro numérique. Conséquences concrètes
+  pour un gérant.
+
+**Partie 3 (50 min) — TP 0 : constituer le panier + étude de cas**
+
+- Prise en main de l'environnement, collecte des données, premier graphique de
+  prix normalisés, calcul des rendements logarithmiques.
+- Étude de cas dirigée : **anatomie du krach de 2026**. Les étudiants
+  reconstituent la chronologie et hiérarchisent les causes (resserrement
+  monétaire, sorties d'ETF, désendettement) à partir des données.
+
+> **Livrable** — Fiche d'actif d'une page sur un crypto-actif au choix (hors BTC
+> et ETH) : famille, mécanisme d'offre, source de valeur, principaux risques.
+
+---
+
+### Séance 2 — Le crypto-actif comme objet statistique
+
+**Partie 1 (50 min) — Faits stylisés**
+
+- Rendements arithmétiques vs logarithmiques : pourquoi le choix compte quand la
+  volatilité quotidienne atteint 5 %.
+- Distribution : moments d'ordre 3 et 4, test de Jarque–Bera, graphique
+  quantile-quantile. Estimation de l'indice de queue (estimateur de Hill) :
+  la queue crypto suit-elle une loi de puissance ?
+- Structure de dépendance : autocorrélation des rendements ≈ 0 mais
+  autocorrélation forte de $|r_t|$ → **agrégation de la volatilité**. Effet de
+  levier et son inversion partielle sur les cryptos.
+- **Le piège du 24/7** : un actif qui cote 365 jours par an ne s'annualise pas
+  comme une action ($\sqrt{365}$ vs $\sqrt{252}$). Conséquences sur toute
+  comparaison de volatilité et sur le ratio de Sharpe.
+- Corrélations : le découplage supposé crypto/actions et sa remise en cause
+  depuis l'arrivée des ETF au comptant.
+
+**Partie 2 (50 min) — Efficience et prédictibilité**
+
+- Hypothèse d'efficience : les trois formes, et ce que chacune permet réellement
+  de tester. Efficience ≠ prix « juste ».
+- Racine unitaire : ADF et KPSS sur les prix et les log-prix. Pourquoi les deux
+  tests sont complémentaires (hypothèses nulles opposées) et pourquoi le résultat
+  est **attendu, donc peu informatif** en niveau.
+- **Ratio de variance de Lo–MacKinlay** : construction, statistique robuste à
+  l'hétéroscédasticité, interprétation de $VR(q) \gtrless 1$.
+- Discussion critique : les rejets d'efficience sur les cryptos sont-ils
+  exploitables ? Coûts de transaction, écart achat-vente, dragage de données,
+  disparition des anomalies après publication.
+
+**Partie 3 (50 min) — TP 1 : diagnostic empirique**
+
+Les étudiants produisent, sur leur panier, le tableau complet des faits stylisés
+et la batterie de tests d'efficience, puis rédigent leur diagnostic.
+
+> **Livrable** — Note de diagnostic empirique (2 pages max) : tableau de
+> statistiques descriptives comparées, graphique QQ, résultats des tests, et
+> **une conclusion argumentée** sur l'efficience du marché étudié.
+
+---
+
+### Séance 3 — Mesurer et backtester le risque
+
+**Partie 1 (50 min) — Estimer une volatilité qui bouge**
+
+- Volatilité réalisée sur fenêtre fixe : ce qu'elle mesure, ce qu'elle rate.
+- Volatilité glissante : arbitrage biais/variance dans le choix de la fenêtre ;
+  l'artefact du « plateau » après un choc (effet fantôme).
+- **EWMA / RiskMetrics** : $\sigma_t^2 = \lambda \sigma_{t-1}^2 + (1-\lambda) r_{t-1}^2$.
+  D'où vient $\lambda = 0{,}94$, quelle est la demi-vie associée, et pourquoi
+  cette valeur calibrée sur des actions est probablement inadaptée aux cryptos.
+- Comparaison des trois estimateurs sur un choc réel : lequel réagit, lequel
+  retarde, lequel persiste ?
+
+**Partie 2 (50 min) — VaR, Expected Shortfall et backtesting**
+
+- VaR : définition, horizon, seuil. Quatre estimateurs comparés — historique,
+  gaussienne, Student-*t* (avec estimation du degré de liberté), Monte Carlo.
+- Pourquoi la VaR gaussienne **sous-estime structurellement** le risque crypto :
+  lien direct avec la leptokurticité mesurée en séance 2.
+- *Expected Shortfall* : sous-additivité, cohérence au sens d'Artzner et al.,
+  et raison pour laquelle Bâle III l'a substituée à la VaR.
+- **Backtesting** — le cœur de la séance : test de Kupiec (couverture
+  inconditionnelle), test de Christoffersen (indépendance des dépassements), test
+  conjoint. Interprétation : un modèle peut avoir le bon *nombre* de dépassements
+  et rester mauvais s'ils sont groupés.
+- Corrélations glissantes crypto/actions : la diversification s'évanouit-elle
+  précisément quand on en a besoin ?
+
+**Partie 3 (50 min) — TP 2 + lancement du projet**
+
+- Chaîne complète : estimation de volatilité → VaR/ES → backtesting → verdict.
+- Présentation des sujets de projet et constitution des binômes. Chaque binôme
+  repart avec une question de recherche validée.
+
+> **Livrable** — Rapport de risque : tableau comparatif des quatre VaR, graphique
+> des dépassements, résultats des tests de Kupiec et Christoffersen, et
+> **recommandation** motivée d'un estimateur.
+
+---
+
+## Méthodes pédagogiques
+
+- **Un panier filé** sur les trois séances : les données de la séance 1 servent aux
+  séances 2 et 3, ce qui rend la progression cumulative et évite les
+  redémarrages à froid.
+- **Notebooks à trous** : le code d'infrastructure (import, mise en forme,
+  graphiques) est fourni ; les étudiants écrivent les cellules qui portent le
+  raisonnement. Cela protège les 50 minutes de TP contre les problèmes techniques.
+- **Jeu de données de secours** versionné en CSV : le cours fonctionne même sans
+  connexion ou si une API tombe.
+- **Travail en binômes**, restitution orale de 5 minutes en fin de partie 3.
+- Corrigés commentés déposés après chaque séance.
+
+---
+
+## Évaluation
+
+| Composante | Poids | Attendu |
+|---|---|---|
+| Fiche d'actif (S1) | 10 % | 1 page, individuelle |
+| Note de diagnostic empirique (S2) | 20 % | 2 pages + notebook, en binôme |
+| Rapport de risque (S3) | 20 % | 2 pages + notebook, en binôme |
+| **Projet final** | 40 % | Notebook reproductible + note de synthèse de 3 pages |
+| Soutenance du projet (7 min) | 10 % | Clarté, honnêteté sur les limites |
+
+::: {.callout-important}
+## Critère transversal
+La **reproductibilité** est notée dans chaque livrable comportant du code : un
+notebook qui ne s'exécute pas de bout en bout après *Restart & Run All* est
+sanctionné, quelle que soit la qualité de l'analyse.
+:::
+
+Les sujets de projet et les grilles détaillées figurent dans `04-Eval/`.
+
+---
+
+## Bibliographie
+
+### Ouvrages de référence
+
+- **Jorion, P.** (2007), *Value at Risk: The New Benchmark for Managing Financial
+  Risk*, 3ᵉ éd., McGraw-Hill. — La référence sur la VaR et son backtesting.
+- **Christoffersen, P.** (2011), *Elements of Financial Risk Management*, 2ᵉ éd.,
+  Academic Press. — Chapitres 2, 4 et 8 : exactement le programme des séances 2 et 3.
+- **Campbell, J., Lo, A., MacKinlay, C.** (1997), *The Econometrics of Financial
+  Markets*, Princeton University Press. — Chapitre 2 pour le ratio de variance.
+- **Narayanan, A. et al.** (2016), *Bitcoin and Cryptocurrency Technologies*,
+  Princeton University Press. — Accessible en ligne, pour le socle technique.
+
+### Articles
+
+- **Lo, A. & MacKinlay, C.** (1988), « Stock Market Prices Do Not Follow Random
+  Walks », *Review of Financial Studies*, 1(1), 41–66.
+- **Kupiec, P.** (1995), « Techniques for Verifying the Accuracy of Risk
+  Measurement Models », *Journal of Derivatives*, 3(2), 73–84.
+- **Christoffersen, P.** (1998), « Evaluating Interval Forecasts »,
+  *International Economic Review*, 39(4), 841–862.
+- **Artzner, P. et al.** (1999), « Coherent Measures of Risk »,
+  *Mathematical Finance*, 9(3), 203–228.
+- **Baur, D., Hong, K., Lee, A.** (2018), « Bitcoin: Medium of Exchange or
+  Speculative Assets? », *Journal of International Financial Markets*, 54, 177–189.
+- **Liu, Y. & Tsyvinski, A.** (2021), « Risks and Returns of Cryptocurrency »,
+  *Review of Financial Studies*, 34(6), 2689–2727.
+- **Makarov, I. & Schoar, A.** (2020), « Trading and Arbitrage in Cryptocurrency
+  Markets », *Journal of Financial Economics*, 135(2), 293–319.
+- **Cong, L. W., Li, Y., Wang, N.** (2021), « Tokenomics: Dynamic Adoption and
+  Valuation », *Review of Financial Studies*, 34(3), 1105–1155.
+
+### Sources institutionnelles
+
+- **J.P. Morgan / Reuters** (1996), *RiskMetrics — Technical Document*, 4ᵉ éd.
+- **Comité de Bâle** (2019), *Minimum Capital Requirements for Market Risk* (FRTB).
+- **AMF**, dossier « Règlement européen MiCA ».
+- **BCE**, dossier « Euro numérique » et rapports d'étape du projet pilote.
+- **BRI**, *Annual Economic Report* — chapitres consacrés à la finance numérique.
+
+### Données
+
+| Source | Contenu | Accès |
+|---|---|---|
+| `yfinance` | Prix quotidiens crypto et actifs traditionnels | Libre, sans clé |
+| CoinGecko API | Prix, volumes, capitalisations (17 000 actifs) | Gratuit — 100 appels/min sur compte Demo |
+| `ccxt` | Données de plateformes, carnets d'ordres | Libre |
+| Glassnode, CryptoQuant | Données de chaîne (transactions, flux) | Freemium |
+| FRED | Taux, inflation, indices macro | Libre |

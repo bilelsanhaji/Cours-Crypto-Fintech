@@ -1,0 +1,438 @@
+---
+title: "Séance 3 — Mesurer et backtester le risque"
+subtitle: "Volatilité, VaR, Expected Shortfall · M2 MBFA, parcours Finance"
+# Configuration commune : 01-Slides/_quarto.yml
+format:
+  revealjs:
+    footer: "M2 MBFA — Crypto & Fintech — Séance 3"
+---
+
+<!--
+  VERSION ÉTUDIANTE — générée automatiquement par _build-version-etudiante.py
+  Ne pas modifier directement : toute modification serait écrasée.
+  La source se trouve dans 01-Slides/S3-risque.qmd
+-->
+
+## Déroulé de la séance {.smaller}
+
+::: {.small}
+| | | Durée | Ce qu'on y fait |
+|---|---|---|---|
+| **1** | Estimer une volatilité qui bouge | 50 min | Trois estimateurs, et pourquoi λ = 0,94 ne va pas |
+| | *pause* | 10 min | |
+| **2** | VaR, Expected Shortfall, backtesting | 50 min | Mesurer le risque — et **prouver** que la mesure tient |
+| | *pause* | 10 min | |
+| **3** | TP 2 et lancement du projet | 50 min | Votre verdict chiffré, votre sujet validé |
+:::
+
+::: {.retenir}
+**Les deux questions du jour.** « Combien puis-je perdre demain ? »
+Et surtout la seconde, que peu de cours posent :
+**« ma réponse à la première est-elle fiable, et comment le prouver ? »**
+:::
+
+
+## Où nous en sommes
+
+::: {.small}
+| | Acquis |
+|---|---|
+| **S1** | Ces actifs ont des logiques de valorisation différentes ; leur marché produit de la volatilité de façon partiellement **endogène** |
+| **S2** | Le rendement est imprévisible ; **son amplitude ne l'est pas** ; les queues sont épaisses ($\alpha$ souvent < 4) |
+| **S3** | On **exploite** S2 pour mesurer le risque — et on **vérifie** que la mesure tient |
+:::
+
+::: {.formule-cle}
+$$r_t = \sigma_t\,\varepsilon_t,
+\qquad \sigma_t \text{ prévisible},
+\qquad \varepsilon_t \text{ imprévisible}$$
+:::
+
+::: {.retenir}
+Toute la séance tient dans cette décomposition. On modélise $\sigma_t$.
+On ne prétend rien sur $\varepsilon_t$.
+:::
+
+
+# 1 — Estimer une volatilité qui bouge
+
+## Trois estimateurs, trois hypothèses
+
+::: {.small}
+| | Formule | Hypothèse implicite |
+|---|---|---|
+| **Réalisée**, fenêtre pleine | $\hat\sigma^2 = \frac{1}{n-1}\sum_{t=1}^{n}(r_t-\bar r)^2$ | La volatilité est **constante** |
+| **Glissante**, fenêtre $w$ | $\hat\sigma_t^2 = \frac{1}{w-1}\sum_{i=1}^{w}(r_{t-i}-\bar r_t)^2$ | Constante **par morceaux** |
+| **EWMA** | $\hat\sigma_t^2 = \lambda\hat\sigma_{t-1}^2 + (1-\lambda)\,r_{t-1}^2$ | Le passé compte, en décroissance **géométrique** |
+:::
+
+::: {.piege}
+La volatilité réalisée sur échantillon complet est presque toujours le mauvais
+choix sur crypto : elle mélange des régimes sans rapport. Une volatilité de 60 %
+« en moyenne 2018-2026 » ne décrit **aucune** période réellement vécue.
+:::
+
+
+## Le choix de la fenêtre — et l'effet fantôme
+
+<svg class="schema" viewBox="0 0 960 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Effet fantôme d'une volatilité glissante">
+  <line x1="70" y1="215" x2="920" y2="215" stroke="var(--argent-fonce)" stroke-width="1.2"/>
+  <line x1="70" y1="215" x2="70"  y2="35"  stroke="var(--argent-fonce)" stroke-width="1.2"/>
+  <text x="920" y="240" text-anchor="end" font-size="13.5" fill="var(--argent-fonce)">temps</text>
+  <text x="56" y="38" text-anchor="end" font-size="13.5" fill="var(--argent-fonce)" transform="rotate(-90 56 38)">volatilité estimée</text>
+
+  <!-- choc -->
+  <line x1="240" y1="215" x2="240" y2="45" stroke="var(--or)" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="240" y="34" text-anchor="middle" font-size="13" font-weight="600" fill="#8C6D12">choc</text>
+  <!-- sortie de fenêtre -->
+  <line x1="690" y1="215" x2="690" y2="45" stroke="var(--or)" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="690" y="34" text-anchor="middle" font-size="13" font-weight="600" fill="#8C6D12">choc − w jours plus tard</text>
+
+  <!-- glissante w=252 : plateau puis chute brutale -->
+  <path d="M80,185 L235,183 L245,95 L688,92 L695,180 L910,178"
+        fill="none" stroke="var(--or)" stroke-width="2.8"/>
+  <text x="420" y="80" font-size="13.5" font-weight="600" fill="#8C6D12">glissante w = 252 : plateau artificiel</text>
+  <text x="740" y="140" font-size="13" font-weight="600" fill="#8C6D12">chute brutale</text>
+  <text x="740" y="157" font-size="12.5" fill="#8C6D12">sans aucun événement</text>
+
+  <!-- EWMA : pic puis décroissance -->
+  <path d="M80,192 L235,190 L248,70 C300,105 380,145 470,165 C580,185 750,190 910,190"
+        fill="none" stroke="var(--klein)" stroke-width="2.8"/>
+  <text x="330" y="196" font-size="13.5" font-weight="600" fill="var(--klein)">EWMA : décroissance progressive</text>
+</svg>
+
+::: {.piege}
+**L'effet fantôme.** Un choc entré dans la fenêtre y reste $w$ jours, puis en sort
+brutalement. La volatilité estimée chute d'un coup, **alors qu'il ne s'est rien
+passé ce jour-là**. Un artefact pur, exactement $w$ jours après le choc.
+:::
+
+::: {.retenir}
+C'est le défaut structurel de la fenêtre glissante : toutes les observations ont
+**le même poids**, puis un poids **nul**. L'EWMA existe pour corriger cela.
+:::
+
+
+## EWMA — la réponse de RiskMetrics
+
+::: {.formule-cle}
+$$\hat\sigma_t^2 = \lambda\,\hat\sigma_{t-1}^2 + (1-\lambda)\,r_{t-1}^2$$
+:::
+
+En déroulant la récursion :
+
+$$\hat\sigma_t^2 = (1-\lambda)\sum_{i=1}^{\infty}\lambda^{\,i-1}\,r_{t-i}^2$$
+
+<svg class="schema" viewBox="0 0 900 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Poids EWMA contre poids d'une fenêtre glissante">
+  <line x1="70" y1="150" x2="860" y2="150" stroke="var(--argent-fonce)" stroke-width="1.2"/>
+  <line x1="70" y1="150" x2="70"  y2="25"  stroke="var(--argent-fonce)" stroke-width="1.2"/>
+  <text x="860" y="174" text-anchor="end" font-size="13" fill="var(--argent-fonce)">ancienneté de l'observation (jours)</text>
+  <text x="56" y="28" text-anchor="end" font-size="13" fill="var(--argent-fonce)" transform="rotate(-90 56 28)">poids</text>
+  <!-- fenêtre glissante : rectangle -->
+  <path d="M70,105 L470,105 L470,150" fill="none" stroke="var(--argent-fonce)" stroke-width="2.4" stroke-dasharray="6 4"/>
+  <text x="250" y="98" text-anchor="middle" font-size="13" fill="var(--argent-fonce)">glissante : poids constant 1/w…</text>
+  <text x="530" y="128" font-size="13" fill="var(--argent-fonce)">…puis zéro, d'un coup</text>
+  <!-- EWMA : exponentielle -->
+  <path d="M72,42 C130,72 200,104 290,124 C400,142 560,148 855,149"
+        fill="none" stroke="var(--klein)" stroke-width="2.8"/>
+  <text x="180" y="42" font-size="13.5" font-weight="600" fill="var(--klein)">EWMA : décroissance géométrique</text>
+  <line x1="70" y1="150" x2="70" y2="42" stroke="var(--klein)" stroke-width="2.8"/>
+  <!-- demi-vie -->
+  <line x1="188" y1="150" x2="188" y2="96" stroke="var(--or)" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <text x="196" y="88" font-size="12.5" font-weight="600" fill="#8C6D12">demi-vie ≈ 11 j (λ = 0,94)</text>
+</svg>
+
+::: {.retenir}
+**Demi-vie** : $\;h = \dfrac{\ln 0{,}5}{\ln \lambda} = 11{,}2$ jours pour $\lambda = 0{,}94$.
+Les 25 dernières observations portent **78,7 %** du poids total.
+:::
+
+
+## Lien avec les modèles de volatilité conditionnelle
+
+$$\hat\sigma_t^2 = \lambda\hat\sigma_{t-1}^2 + (1-\lambda)r_{t-1}^2$$
+
+est le cas particulier de $\;\sigma_t^2 = \omega + \alpha r_{t-1}^2 + \beta\sigma_{t-1}^2\;$
+avec
+
+$$\omega = 0,\qquad \alpha = 1-\lambda,\qquad \beta = \lambda,\qquad \alpha+\beta = 1$$
+
+::: {.piege}
+**Conséquence** : la variance n'a **pas de niveau de long terme**. Les chocs sont
+**permanents**, il n'y a pas de retour à la moyenne de la volatilité.
+
+✅ un seul paramètre, robuste, aucune optimisation fragile, jamais de non-convergence
+❌ pas de variance inconditionnelle → **inadapté aux horizons longs**
+
+Pour un horizon d'un jour — celui de la VaR réglementaire — c'est sans conséquence.
+:::
+
+
+# 2 — VaR, Expected Shortfall, backtesting
+
+## Value at Risk : définition et convention
+
+$$\mathbb{P}\big(r_{t+1} < -\text{VaR}_\alpha\big) = \alpha$$
+
+La VaR à $\alpha = 1\,\%$ sur un jour est la perte qui n'est dépassée que
+**un jour sur cent**.
+
+::: {.definition}
+**Convention du cours** — la VaR est un **nombre positif** représentant une perte.
+
+```python
+var = -np.quantile(r, alpha)
+```
+
+Trois paramètres à fixer explicitement : **seuil** $\alpha$ · **horizon** ·
+**périmètre**.
+:::
+
+::: {.piege}
+La VaR ne dit **rien** sur ce qui se passe au-delà du seuil. Deux portefeuilles
+peuvent avoir la même VaR à 1 % et des pertes extrêmes totalement différentes.
+C'est sa limite fondamentale, pas un détail.
+:::
+
+
+## Quatre estimateurs de VaR
+
+::: {.xsmall}
+| Méthode | Formule | Hypothèse | Force | Faiblesse |
+|---|---|---|---|---|
+| **Historique** | $-\hat q_\alpha\big(\{r_t\}\big)$ | Le passé se répète | Aucune hypothèse de loi ; capte les queues observées | Ne peut pas dépasser le pire passé ; lente à réagir |
+| **Gaussienne** | $-\big(\hat\mu + z_\alpha\hat\sigma_t\big)$ | $r \sim \mathcal{N}$ | Simple ; se combine à l'EWMA | Rate les queues lointaines |
+| **Student-$t$** | $-\Big(\hat\mu + t_{\alpha,\nu}\sqrt{\tfrac{\nu-2}{\nu}}\,\hat\sigma_t\Big)$ | $r \sim t_\nu$ standardisée | Capte les queues avec **un** paramètre de plus | $\nu$ à estimer ; queues symétriques |
+| **Monte Carlo** | quantile de $M$ tirages | Celle du modèle simulé | Portefeuilles non linéaires, options | **Ne vaut que ce que vaut le modèle** |
+:::
+
+::: {.piege}
+La VaR Monte Carlo n'est **pas** plus fiable que les autres. C'est une manière de
+calculer un quantile quand la formule fermée n'existe pas. Si l'on simule des
+gaussiennes, on obtient la VaR gaussienne — **avec du bruit en plus**.
+:::
+
+
+## Où la gaussienne échoue — et où elle n'échoue pas
+
+Rapport $\text{VaR}_{\text{Student}} / \text{VaR}_{\text{normale}}$, **à volatilité identique** :
+
+::: {.small}
+| $\alpha$ | $\nu=10$ | $\nu=6$ | $\nu=5$ | $\nu=4$ | $\nu=3$ |
+|---|---|---|---|---|---|
+| **5 %** | 0,99 | 0,97 | 0,95 | **0,92** | **0,83** |
+| 2,5 % | 1,02 | 1,02 | 1,02 | 1,00 | 0,94 |
+| **1 %** | 1,06 | 1,10 | 1,12 | **1,14** | 1,13 |
+| 0,5 % | 1,10 | 1,18 | 1,21 | 1,26 | 1,31 |
+| **0,1 %** | 1,20 | 1,38 | 1,48 | **1,64** | **1,91** |
+:::
+
+::: {.piege}
+**À 5 %, la VaR gaussienne est la plus conservatrice des deux.**
+
+Les queues épaisses n'épaississent pas toute la distribution : à variance fixée,
+ce qui est gagné dans l'extrême est perdu au centre. Le croisement est vers 2,5 %.
+
+La gaussienne n'échoue donc pas « partout ». Elle échoue **dans la queue
+lointaine** — là où se produisent les pertes qui coûtent un poste.
+:::
+
+
+## Expected Shortfall
+
+::: {.formule-cle}
+$$\text{ES}_\alpha = \mathbb{E}\big[\,-r \;\big|\; -r > \text{VaR}_\alpha\,\big]$$
+:::
+
+La **perte moyenne dans les cas où la VaR est dépassée**.
+
+::: {.small}
+| | VaR | ES |
+|---|---|---|
+| Information sur la queue | ❌ | ✅ |
+| **Sous-additivité** | ❌ non garantie | ✅ toujours |
+| Mesure cohérente — Artzner *et al.* (1999) | non | **oui** |
+| Backtesting | simple, bien établi | plus délicat |
+| Bâle III (FRTB) | remplacée | **ES à 97,5 %, 250 jours** |
+:::
+
+::: {.retenir}
+La non-sous-additivité de la VaR signifie qu'un portefeuille **diversifié** peut
+afficher une VaR **supérieure** à la somme des VaR de ses composantes.
+Une mesure de risque qui pénalise la diversification est indéfendable.
+:::
+
+
+## Backtesting ① — le test de Kupiec
+
+Suite des **dépassements** : $\;I_t = \mathbb{1}\{-r_t > \text{VaR}_{\alpha,t}\}$
+
+Sous un modèle correct, $I_t \sim \mathcal{B}(\alpha)$, donc $\mathbb{E}\big[\sum I_t\big] = \alpha T$.
+
+$$LR_{uc} = -2\ln\!\left[\frac{(1-\alpha)^{T-N}\alpha^{N}}{(1-\hat\pi)^{T-N}\hat\pi^{N}}\right] \;\sim\; \chi^2(1)$$
+
+::: {.small}
+| $T$ | $\alpha$ | Attendus | Zone de non-rejet à 5 % |
+|---|---|---|---|
+| 250 | 1 % | 2,5 | **1 à 6** |
+| 1 000 | 1 % | 10 | **5 à 16** |
+| 1 000 | 5 % | 50 | 38 à 64 |
+:::
+
+::: {.piege}
+**Faible puissance.** Sur 250 jours à 1 % — la fenêtre réglementaire — la zone de
+non-rejet va de 1 à 6 dépassements pour 2,5 attendus. On ne détecte qu'un modèle
+très mauvais.
+:::
+
+
+## Backtesting ② — le test de Christoffersen
+
+::: {.piege}
+Un modèle peut avoir **exactement le bon nombre** de dépassements et être mauvais :
+si les 10 dépassements attendus surviennent tous la même semaine, le modèle n'a
+rien vu venir.
+:::
+
+$H_0$ d'indépendance : $\;\mathbb{P}(I_t = 1 \mid I_{t-1} = 1) = \mathbb{P}(I_t = 1 \mid I_{t-1} = 0)$
+
+$$LR_{ind} \sim \chi^2(1) \qquad\qquad LR_{cc} = LR_{uc} + LR_{ind} \sim \chi^2(2)$$
+
+::: {.small}
+| $LR_{uc}$ | $LR_{ind}$ | Diagnostic |
+|---|---|---|
+| ✅ | ✅ | **Modèle validé** |
+| ❌ | ✅ | Mauvais **niveau** — recalibrer $\sigma$ ou la loi |
+| ✅ | ❌ | **Dépassements groupés** — la dynamique de volatilité est mal captée |
+| ❌ | ❌ | À reprendre entièrement |
+:::
+
+::: {.retenir}
+La troisième ligne est **le point qui départage les copies**. Un modèle qui passe
+Kupiec et échoue à Christoffersen affiche le bon nombre moyen de dépassements,
+mais les subit **en rafale** — ce qu'un appel de marge ne pardonne pas.
+:::
+
+
+# 3 — TP 2 et lancement du projet
+
+## Chaîne complète de gestion du risque
+
+Ouvrir `02-TP/TP2-risque-backtesting.ipynb`
+
+::: {.xsmall}
+| | Étape | Priorité |
+|---|---|---|
+| 1 | Trois estimateurs de volatilité tracés autour d'un choc | ⬤ |
+| 2 | Estimation de $\lambda$ par minimisation de l'erreur — comparer à 0,94 | ○ |
+| 3 | Quatre VaR à 1 %, en fenêtre glissante | ⬤ |
+| 4 | Expected Shortfall et rapport ES/VaR | ○ |
+| 5 | Graphique des dépassements | ⬤ |
+| 6 | **Kupiec + Christoffersen → tableau de verdict** | ⬤ |
+| 7 | Corrélation glissante BTC / S&P 500, avant et après janvier 2024 | ○ |
+| 8 | **Rapport de risque, 2 pages, avec recommandation motivée** | ⬤ |
+:::
+
+::: {.piege}
+Le rapport doit se terminer par : *« pour un portefeuille de ce type et à cet
+horizon, nous recommandons la méthode X, parce que… ; sa principale limite est… »*
+
+Sans cette phrase, le rapport est incomplet.
+:::
+
+
+## Corrélations : la diversification tient-elle sous stress ?
+
+$$\rho_t(w) = \operatorname{corr}\!\big(r^{\text{BTC}},\, r^{\text{SP500}}\big)\Big|_{[t-w,\,t]}$$
+
+::: {.small}
+Trois questions, testables aujourd'hui sur vos données :
+
+1. La corrélation BTC / S&P 500 a-t-elle augmenté depuis le **11 janvier 2024** ?
+2. Monte-t-elle **pendant** les phases de stress ?
+3. L'or se comporte-t-il différemment du Bitcoin sur ce plan ?
+:::
+
+::: {.piege}
+**Le piège de sélection.** Conditionner sur les extrêmes augmente la corrélation
+apparente **même sous normalité bivariée à corrélation constante**
+(Boyer, Gibson & Loretan, 1999).
+
+Une « contagion » mesurée par une hausse de corrélation en période de stress peut
+être un **pur artefact**. À mentionner obligatoirement dans votre rapport.
+:::
+
+
+## Le projet final
+
+**Binômes · notebook reproductible + note de 3 pages · soutenance de 7 minutes**
+
+::: {.small}
+| | Question |
+|---|---|
+| **1** | L'arrivée des ETF au comptant (11 janvier 2024) a-t-elle modifié le profil de risque du Bitcoin ? |
+| **2** | Quelle méthode de VaR pour un portefeuille 80 % actions / 20 % crypto ? |
+| **3** | Le Bitcoin est-il une couverture, une diversification, ou un simple actif de risque ? *(cadre de Baur & Lucey)* |
+| **4** | Un stablecoin décroche-t-il de façon prévisible ? |
+| **5** | Sujet libre — **validé avant la fin de la séance**. |
+:::
+
+::: {.definition}
+**Trois exigences non négociables**
+
+1. **Reproductibilité** — *Restart & Run All* doit fonctionner. Graine fixée, chemins relatifs.
+2. **Section « limites »** obligatoire, et **notée**.
+3. **Aucune recommandation d'investissement.** L'objet est l'analyse du risque.
+:::
+
+
+## Ce que vous saurez faire, en sortant
+
+::: {.small}
+- Classer un crypto-actif et identifier la logique de valorisation qui s'y applique
+- Lire un marché crypto — plateformes, teneur de marché automatisé, levier, stablecoins
+- Situer une opération dans le cadre MiCA
+- Établir les faits stylisés d'une série et **les interpréter**
+- Tester la marche aléatoire proprement, et savoir ce qu'un rejet **ne prouve pas**
+- Estimer une volatilité conditionnelle et **justifier** le choix d'estimateur
+- Calculer quatre VaR, une ES, et **prouver** laquelle tient sur les données
+- Produire une analyse quantitative reproductible et en exposer les limites
+:::
+
+::: {.retenir}
+La compétence transférable n'est pas « connaître la crypto ».
+
+C'est **mesurer un risque sur un actif dont la distribution se comporte mal, et
+vérifier sa mesure**. Cela vaut pour les cryptos, les matières premières, les
+marchés émergents, le risque de crédit.
+:::
+
+
+## Références de la séance {.smaller}
+
+::: {.xsmall}
+**Volatilité**
+
+- **J.P. Morgan / Reuters** (1996), *RiskMetrics — Technical Document*, 4ᵉ éd. — origine de l'EWMA et de λ = 0,94.
+- **Christoffersen, P.** (2011), *Elements of Financial Risk Management*, 2ᵉ éd., Academic Press — chapitres 4 et 8. La meilleure porte d'entrée.
+
+**VaR et Expected Shortfall**
+
+- **Jorion, P.** (2007), *Value at Risk: The New Benchmark for Managing Financial Risk*, 3ᵉ éd., McGraw-Hill.
+- **Artzner, P., Delbaen, F., Eber, J.-M., Heath, D.** (1999), « Coherent Measures of Risk », *Mathematical Finance*, 9(3), 203-228.
+- **Comité de Bâle** (2019), *Minimum Capital Requirements for Market Risk* (FRTB) — ES à 97,5 %.
+
+**Backtesting**
+
+- **Kupiec, P.** (1995), « Techniques for Verifying the Accuracy of Risk Measurement Models », *Journal of Derivatives*, 3(2), 73-84.
+- **Christoffersen, P.** (1998), « Evaluating Interval Forecasts », *International Economic Review*, 39(4), 841-862.
+- **Christoffersen, P. & Pelletier, D.** (2004), « Backtesting Value-at-Risk: A Duration-Based Approach », *J. of Financial Econometrics*, 2(1) — plus puissant, hors programme.
+- **Engle, R. & Manganelli, S.** (2004), « CAViaR », *JBES*, 22(4) — le *Dynamic Quantile test*.
+
+**Corrélations et diversification**
+
+- **Longin, F. & Solnik, B.** (2001), « Extreme Correlation of International Equity Markets », *Journal of Finance*, 56(2), 649-676.
+- **Boyer, B., Gibson, M. & Loretan, M.** (1999), « Pitfalls in Tests for Changes in Correlations », *Fed IFDP* 597.
+- **Baur, D. & Lucey, B.** (2010), « Is Gold a Hedge or a Safe Haven? », *Financial Review*, 45(2), 217-229 — le cadre du sujet de projet n° 3.
+:::
+

@@ -1,0 +1,546 @@
+---
+title: "Séance 2 — Le crypto-actif comme objet statistique"
+subtitle: "Faits stylisés et efficience · M2 MBFA, parcours Finance"
+# Configuration commune : 01-Slides/_quarto.yml
+format:
+  revealjs:
+    footer: "M2 MBFA — Crypto & Fintech — Séance 2"
+---
+
+<!--
+  VERSION ÉTUDIANTE — générée automatiquement par _build-version-etudiante.py
+  Ne pas modifier directement : toute modification serait écrasée.
+  La source se trouve dans 01-Slides/S2-faits-stylises.qmd
+-->
+
+## Déroulé de la séance {.smaller}
+
+::: {.small}
+| | | Durée | Ce qu'on y fait |
+|---|---|---|---|
+| **1** | Faits stylisés | 50 min | Ce qui distingue une série crypto d'une série actions |
+| | *pause* | 10 min | |
+| **2** | Efficience et prédictibilité | 50 min | Tester la marche aléatoire — et savoir lire un rejet |
+| | *pause* | 10 min | |
+| **3** | TP 1 — diagnostic empirique | 50 min | Votre panier, votre note de diagnostic |
+:::
+
+::: {.retenir}
+**La question de la séance** — une série de rendements crypto se distingue-t-elle
+d'une série d'actions, et si oui **comment exactement** ?
+
+Réponse anticipée : oui, mais **pas là où on l'attend**.
+:::
+
+
+# 1 — Faits stylisés
+
+## QCM de rappel — 5 minutes
+
+::: {.small}
+Cinq questions sur la séance 1, autocorrigées. **Non noté.**
+
+1. La blockchain permet-elle de se passer de confiance ?
+2. Sur quelle fonction de la monnaie le Bitcoin échoue-t-il principalement ?
+3. Un fournisseur de liquidité sur AMM est-il acheteur ou vendeur de volatilité ?
+4. Pourquoi l'USDC est-il tombé à 0,87 \$ en mars 2023 ?
+5. Que régule MiCA — le protocole, ou l'intermédiation ?
+:::
+
+::: {.question}
+Répondez d'abord seul, puis on corrige ensemble. Ce n'est pas noté.
+:::
+
+
+## Les onze faits stylisés de Cont (2001)
+
+::: {.small}
+| | Fait | Sur actions | Sur crypto |
+|---|---|---|---|
+| 1 | Absence d'autocorrélation des rendements | ✔ | ✔ |
+| 2 | **Queues épaisses** | ✔ | ✔✔ |
+| 3 | Asymétrie négative gain/perte | ✔ | variable |
+| 4 | Normalité **agrégationnelle** | ✔ | ✔ |
+| 5 | Intermittence | ✔ | ✔✔ |
+| 6 | **Agrégation de la volatilité** | ✔ | ✔✔ |
+| 7 | Queues épaisses **conditionnelles** | ✔ | ✔ |
+| 8 | Décroissance lente de l'autocorrélation de $\lvert r\rvert$ | ✔ | ✔ |
+| 9 | **Effet de levier** | ✔ | ⚠️ autre mécanisme |
+| 10 | Corrélation volume / volatilité | ✔ | ✔ |
+| 11 | Asymétrie des échelles de temps | ✔ | ✔ |
+:::
+
+::: {.retenir}
+**Aucun fait stylisé n'est propre aux cryptos. Tous y sont amplifiés.**
+
+La bonne question n'est donc pas « quel modèle spécial faut-il ? » mais
+**« les modèles standard tiennent-ils quand les paramètres sont extrêmes ? »**
+:::
+
+
+## Rendement arithmétique ou logarithmique ?
+
+$$r_t^{\text{arith}} = \frac{P_t - P_{t-1}}{P_{t-1}}
+\qquad\qquad
+r_t^{\log} = \ln\!\left(\frac{P_t}{P_{t-1}}\right)$$
+
+::: {.columns}
+::: {.column width="50%"}
+**Log** — additif dans le **temps** :
+
+$$r_{t \to t+k}^{\log} = \sum_{j=1}^{k} r_{t+j}^{\log}$$
+
+→ agrégation, modélisation, tests
+:::
+::: {.column width="50%"}
+**Arithmétique** — additif entre **actifs** :
+
+$$r_p = \sum_{i} w_i\, r_i$$
+
+→ portefeuilles, performance, VaR en euros
+:::
+:::
+
+. . .
+
+::: {.piege}
+$r^{\log} \approx r^{\text{arith}}$ **seulement pour de petits mouvements**.
+Pour $-30\%$ en une journée — le Bitcoin, 12 mars 2020 :
+
+$$\ln(0{,}70) = -35{,}67\,\% \qquad\text{soit } \mathbf{5{,}67} \text{ points d'écart}$$
+
+Sur des actions l'approximation passe. **Sur du crypto, elle ne passe pas.**
+:::
+
+
+## Fait 2 — La distribution n'est pas normale
+
+$$S = \mathbb{E}\!\left[\left(\tfrac{r-\mu}{\sigma}\right)^{3}\right]
+\qquad
+K_{\text{excès}} = \mathbb{E}\!\left[\left(\tfrac{r-\mu}{\sigma}\right)^{4}\right] - 3$$
+
+<svg class="schema" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Densité normale contre densité à queues épaisses">
+  <line x1="60" y1="215" x2="850" y2="215" stroke="var(--argent-fonce)" stroke-width="1.2"/>
+  <text x="455" y="243" text-anchor="middle" font-size="13.5" fill="var(--argent-fonce)">rendement standardisé (écarts-types)</text>
+  <g font-size="12" fill="var(--argent-fonce)" text-anchor="middle">
+    <text x="140" y="234">−4σ</text><text x="245" y="234">−2σ</text>
+    <text x="455" y="234">0</text>
+    <text x="665" y="234">+2σ</text><text x="770" y="234">+4σ</text>
+  </g>
+  <!-- normale -->
+  <path d="M100,214 C200,213 260,205 310,175 C360,145 400,60 455,58 C510,60 550,145 600,175 C650,205 710,213 810,214"
+        fill="none" stroke="var(--argent-fonce)" stroke-width="2" stroke-dasharray="6 4"/>
+  <!-- leptokurtique -->
+  <path d="M100,208 C200,204 265,196 315,182 C365,168 410,40 455,38 C500,40 545,168 595,182 C645,196 710,204 810,208"
+        fill="none" stroke="var(--klein)" stroke-width="2.6"/>
+  <!-- zones de queue -->
+  <rect x="100" y="196" width="112" height="19" fill="var(--or)" opacity=".22"/>
+  <rect x="698" y="196" width="112" height="19" fill="var(--or)" opacity=".22"/>
+  <text x="156" y="180" text-anchor="middle" font-size="12.5" fill="#8C6D12">queue</text>
+  <text x="156" y="165" text-anchor="middle" font-size="12.5" fill="#8C6D12">épaisse</text>
+  <text x="754" y="180" text-anchor="middle" font-size="12.5" fill="#8C6D12">queue</text>
+  <text x="754" y="165" text-anchor="middle" font-size="12.5" fill="#8C6D12">épaisse</text>
+  <g font-size="13.5">
+    <line x1="620" y1="70" x2="660" y2="70" stroke="var(--klein)" stroke-width="2.6"/>
+    <text x="668" y="75" fill="var(--klein)">crypto — K ≈ 5 à 20</text>
+    <line x1="620" y1="96" x2="660" y2="96" stroke="var(--argent-fonce)" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="668" y="101" fill="var(--argent-fonce)">normale — K = 0</text>
+  </g>
+  <text x="455" y="88" text-anchor="middle" font-size="12.5" fill="var(--klein)">pic plus haut</text>
+</svg>
+
+::: {.piege}
+**Test de Jarque–Bera** : $\;JB = \dfrac{n}{6}\!\left(S^2 + \dfrac{K^2}{4}\right) \sim \chi^2(2)$
+
+Sur 2 000 observations, il rejette pour **toute** série financière.
+Le test n'informe donc presque pas. **C'est l'amplitude de $K$ qui compte** —
+c'est elle qui déterminera l'erreur de la VaR gaussienne en séance 3.
+:::
+
+
+## Fait 2 bis — Les queues suivent une loi de puissance
+
+La normale décroît en $e^{-x^2/2}$. Les rendements financiers décroissent plutôt en
+
+::: {.formule-cle}
+$$\mathbb{P}(|r| > x) \;\sim\; x^{-\alpha}$$
+:::
+
+**Estimateur de Hill**, sur les $k$ plus grandes valeurs absolues ordonnées
+$r_{(1)} \ge r_{(2)} \ge \dots$ :
+
+$$\hat\alpha_k^{-1} \;=\; \frac{1}{k}\sum_{i=1}^{k} \ln\frac{r_{(i)}}{r_{(k+1)}}$$
+
+::: {.small}
+| $\alpha$ | Conséquence |
+|---|---|
+| $\alpha < 2$ | **La variance n'existe pas.** Tout le cadre de la volatilité s'effondre. |
+| $2 < \alpha < 4$ | La variance existe, **pas la kurtosis**. |
+| $\alpha > 4$ | Kurtosis finie. |
+:::
+
+::: {.retenir}
+Le moment d'ordre $m$ existe **si et seulement si** $m < \alpha$.
+Sur actions, $\alpha \approx 3$ à 4. Sur crypto, **souvent en dessous de 4**.
+:::
+
+
+## Fait 1 et fait 6 — le pivot du cours
+
+<svg class="schema" viewBox="0 0 960 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Autocorrélation des rendements contre autocorrélation des valeurs absolues">
+  <!-- gauche : r_t -->
+  <g>
+    <text x="230" y="26" text-anchor="middle" font-size="15" font-weight="600" fill="var(--prusse)">Autocorrélation de r(t)</text>
+    <line x1="70" y1="150" x2="400" y2="150" stroke="var(--argent-fonce)" stroke-width="1.2"/>
+    <line x1="70" y1="55" x2="70" y2="215" stroke="var(--argent-fonce)" stroke-width="1.2"/>
+    <line x1="70" y1="128" x2="400" y2="128" stroke="var(--or)" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="70" y1="172" x2="400" y2="172" stroke="var(--or)" stroke-width="1" stroke-dasharray="4 3"/>
+    <g fill="var(--argent-fonce)">
+      <rect x="82"  y="141" width="9" height="9"/><rect x="102" y="150" width="9" height="7"/>
+      <rect x="122" y="146" width="9" height="4"/><rect x="142" y="150" width="9" height="6"/>
+      <rect x="162" y="147" width="9" height="3"/><rect x="182" y="150" width="9" height="4"/>
+      <rect x="202" y="144" width="9" height="6"/><rect x="222" y="150" width="9" height="3"/>
+      <rect x="242" y="148" width="9" height="2"/><rect x="262" y="150" width="9" height="5"/>
+      <rect x="282" y="147" width="9" height="3"/><rect x="302" y="150" width="9" height="3"/>
+      <rect x="322" y="149" width="9" height="1"/><rect x="342" y="150" width="9" height="4"/>
+      <rect x="362" y="148" width="9" height="2"/>
+    </g>
+    <text x="230" y="240" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">retard (jours)</text>
+    <text x="235" y="80" text-anchor="middle" font-size="14" font-weight="600" fill="var(--prusse)">≈ 0 partout</text>
+    <text x="235" y="100" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">le rendement est imprévisible</text>
+  </g>
+  <!-- droite : |r_t| -->
+  <g>
+    <text x="730" y="26" text-anchor="middle" font-size="15" font-weight="600" fill="var(--klein)">Autocorrélation de |r(t)|</text>
+    <line x1="560" y1="150" x2="900" y2="150" stroke="var(--argent-fonce)" stroke-width="1.2"/>
+    <line x1="560" y1="55" x2="560" y2="215" stroke="var(--argent-fonce)" stroke-width="1.2"/>
+    <line x1="560" y1="140" x2="900" y2="140" stroke="var(--or)" stroke-width="1" stroke-dasharray="4 3"/>
+    <g fill="var(--klein)">
+      <rect x="572" y="82"  width="9" height="68"/><rect x="592" y="90"  width="9" height="60"/>
+      <rect x="612" y="96"  width="9" height="54"/><rect x="632" y="101" width="9" height="49"/>
+      <rect x="652" y="105" width="9" height="45"/><rect x="672" y="109" width="9" height="41"/>
+      <rect x="692" y="112" width="9" height="38"/><rect x="712" y="115" width="9" height="35"/>
+      <rect x="732" y="118" width="9" height="32"/><rect x="752" y="120" width="9" height="30"/>
+      <rect x="772" y="122" width="9" height="28"/><rect x="792" y="124" width="9" height="26"/>
+      <rect x="812" y="126" width="9" height="24"/><rect x="832" y="128" width="9" height="22"/>
+      <rect x="852" y="130" width="9" height="20"/>
+    </g>
+    <text x="730" y="240" text-anchor="middle" font-size="12.5" fill="var(--argent-fonce)">retard (jours)</text>
+    <text x="800" y="72" text-anchor="middle" font-size="12.5" fill="var(--klein)">décroissance lente,</text>
+    <text x="800" y="88" text-anchor="middle" font-size="12.5" fill="var(--klein)">significative sur des dizaines de retards</text>
+  </g>
+  <line x1="470" y1="55" x2="470" y2="215" stroke="var(--argent-clair)" stroke-width="1.5"/>
+</svg>
+
+::: {.retenir}
+**Le rendement de demain est imprévisible ; son amplitude ne l'est pas.**
+
+C'est ce qui rend la gestion des risques possible alors que la prévision de prix
+ne l'est pas. **Toute la séance 3 repose sur ce seul fait.**
+:::
+
+
+## Fait 9 — L'effet de levier, et pourquoi il ne devrait pas exister ici
+
+Sur actions : une baisse augmente la volatilité future **plus** qu'une hausse de
+même ampleur.
+
+$$\operatorname{corr}\big(r_t,\; \sigma_{t+1,\,t+k}\big) < 0$$
+
+::: {.piege}
+**L'explication classique ne s'applique pas au Bitcoin.**
+Black (1976) : la baisse du cours augmente le ratio dette / fonds propres, donc le
+risque des actions. Or le Bitcoin n'a **ni bilan ni dette**.
+
+Pourtant l'asymétrie est souvent observée. Deux mécanismes alternatifs :
+
+1. **Levier des positions**, pas des entreprises — les liquidations frappent
+   surtout à la baisse (séance 1) ;
+2. **Rétroaction de volatilité** — une hausse de la volatilité anticipée fait
+   monter la prime de risque, donc **baisser** le prix. La causalité est inversée.
+:::
+
+::: {.question}
+Et sur certaines phases haussières crypto, l'asymétrie **s'inverse** :
+les envolées sont plus volatiles que les chutes. Vous le testerez en TP.
+:::
+
+
+## Le fait qui n'est pas dans Cont — le calendrier 24/7
+
+::: {.columns}
+::: {.column width="48%"}
+**Actions**
+
+≈ **252** jours de cotation
+
+$$\sigma_{\text{an}} = \sigma_{\text{jour}}\sqrt{252}$$
+:::
+::: {.column width="52%"}
+**Crypto**
+
+**365** jours de cotation
+
+$$\sigma_{\text{an}} = \sigma_{\text{jour}}\sqrt{365}$$
+:::
+:::
+
+::: {.formule-cle}
+$$\frac{\sqrt{365}}{\sqrt{252}} = 1{,}2035$$
+:::
+
+::: {.piege}
+Annualiser du crypto en $\sqrt{252}$ **sous-estime la volatilité de 16,9 %**.
+Une volatilité réelle de 60 % est annoncée à 49,9 %.
+
+Cela contamine ensuite le ratio de Sharpe, la VaR à horizon multi-jours, et toute
+comparaison crypto / actions. **C'est une erreur fréquente dans les rapports
+professionnels comme dans des articles publiés.**
+:::
+
+
+# 2 — Efficience et prédictibilité
+
+## Les trois formes de l'efficience
+
+::: {.small}
+| Forme | Information incorporée | Ce qu'on peut tester |
+|---|---|---|
+| **Faible** | Historique des prix | Autocorrélation, ratio de variance, règles techniques |
+| **Semi-forte** | Toute information publique | Études d'événements |
+| **Forte** | Toute information, y compris privée | Performance des initiés |
+:::
+
+::: {.retenir}
+Efficience ≠ « le prix est juste ».
+
+Efficience = **« on ne peut pas gagner systématiquement avec cette information,
+net de coûts et ajusté du risque »**.
+
+Un marché peut être efficient et absurdement volatil.
+:::
+
+
+## Racine unitaire : ADF et KPSS sont complémentaires
+
+::: {.columns}
+::: {.column width="50%"}
+### ADF — Dickey-Fuller augmenté
+
+$H_0$ : **racine unitaire**
+(non stationnaire)
+
+Rejeter → conclure à la stationnarité
+:::
+::: {.column width="50%"}
+### KPSS
+
+$H_0$ : **stationnarité**
+
+Rejeter → conclure à la
+non-stationnarité
+:::
+:::
+
+::: {.small}
+| ADF | KPSS | Conclusion |
+|---|---|---|
+| ne rejette pas | rejette | **Non stationnaire** — cas des prix |
+| rejette | ne rejette pas | **Stationnaire** — cas des rendements |
+| rejette | rejette | Contradiction → mémoire longue, rupture structurelle ? |
+| ne rejette pas | ne rejette pas | Échantillon peu informatif |
+:::
+
+::: {.piege}
+Sur les prix, ADF ne rejette pas et KPSS rejette. **C'est attendu et normal.**
+Ce résultat ne dit **rien** de spécifique aux cryptos : il vaut pour toute série
+de prix financiers. Ne pas le présenter comme une découverte.
+:::
+
+
+## Le ratio de variance de Lo–MacKinlay
+
+Sous marche aléatoire, la variance croît **linéairement** avec l'horizon :
+
+$$\operatorname{Var}\!\big(r_t^{(q)}\big) = q \cdot \operatorname{Var}(r_t)$$
+
+::: {.formule-cle}
+$$VR(q) \;=\; \frac{\operatorname{Var}\big(r_t^{(q)}\big)}{q \cdot \operatorname{Var}(r_t)} \;\;\overset{H_0}{=}\;\; 1$$
+:::
+
+<svg class="schema" viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interprétation du ratio de variance">
+  <line x1="80" y1="175" x2="850" y2="175" stroke="var(--argent-fonce)" stroke-width="1.2"/>
+  <line x1="80" y1="175" x2="80"  y2="25"  stroke="var(--argent-fonce)" stroke-width="1.2"/>
+  <text x="850" y="198" text-anchor="end" font-size="13.5" fill="var(--argent-fonce)">horizon q</text>
+  <text x="66" y="30" text-anchor="end" font-size="13.5" fill="var(--argent-fonce)" transform="rotate(-90 66 30)">Var(r sur q périodes)</text>
+  <!-- marche aléatoire : linéaire -->
+  <line x1="80" y1="175" x2="760" y2="60" stroke="var(--argent-fonce)" stroke-width="2.2" stroke-dasharray="7 4"/>
+  <text x="768" y="58" font-size="13.5" fill="var(--argent-fonce)">VR = 1</text>
+  <text x="768" y="76" font-size="12" fill="var(--argent-fonce)">marche aléatoire</text>
+  <!-- persistance -->
+  <path d="M80,175 C300,135 520,80 750,32" fill="none" stroke="var(--klein)" stroke-width="2.6"/>
+  <text x="760" y="30" font-size="13.5" font-weight="600" fill="var(--klein)">VR &gt; 1</text>
+  <text x="760" y="47" font-size="12" fill="var(--klein)">persistance, tendance</text>
+  <!-- retour à la moyenne -->
+  <path d="M80,175 C300,160 520,140 750,118" fill="none" stroke="var(--or)" stroke-width="2.6"/>
+  <text x="760" y="116" font-size="13.5" font-weight="600" fill="#8C6D12">VR &lt; 1</text>
+  <text x="760" y="133" font-size="12" fill="#8C6D12">retour à la moyenne</text>
+</svg>
+
+::: {.retenir}
+Utiliser **impérativement** la statistique robuste à l'hétéroscédasticité.
+Avec l'agrégation de volatilité établie en partie 1, la version homoscédastique
+rejette **pour la mauvaise raison**.
+:::
+
+
+## De la prédictibilité au profit : le fossé
+
+Supposons que le test rejette la marche aléatoire. Que peut-on en faire ?
+
+::: {.small}
+| Obstacle | Ordre de grandeur |
+|---|---|
+| **Écart achat-vente** | 5 à 50 points de base par aller-retour selon la liquidité |
+| **Impact de marché** | Croît avec la taille ; le carnet crypto est mince hors BTC/ETH |
+| **Frais** | 0,1 à 0,5 % par transaction sur plateforme de détail |
+| **Coût du levier** | Le taux de financement (séance 1) |
+| **Dragage de données** | Tester 100 stratégies produit 5 « significatives » à 5 % |
+| **Décroissance post-publication** | **−26 %** hors échantillon, **−58 %** après publication |
+:::
+
+::: {.retenir}
+Un ratio de variance qui rejette à 5 % est un **résultat statistique**.
+Ce n'est **pas** une stratégie.
+
+La distance entre les deux est la raison d'être de la finance quantitative
+professionnelle.
+:::
+
+
+## L'efficience du Bitcoin a-t-elle changé ?
+
+::: {.columns}
+::: {.column width="50%"}
+### Pour **plus** d'inefficience
+
+- Marché jeune, beaucoup d'investisseurs non professionnels
+- Fragmentation entre plateformes
+- Arbitrage entravé — retraits, conformité, contrôle des capitaux
+- Information non standardisée
+:::
+::: {.column width="50%"}
+### Pour une efficience **croissante**
+
+- Arrivée massive des institutionnels via les ETF
+- Teneurs de marché professionnels
+- Marché continu, sans clôture
+- Arbitrage comptant / dérivés très actif
+:::
+:::
+
+::: {.retenir}
+**Hypothèse testable, avec vos données** : l'efficience du Bitcoin s'est-elle
+améliorée depuis le **11 janvier 2024** (lancement des ETF au comptant) ?
+
+Comparer $VR(q)$ avant et après. **C'est le sujet de projet n° 1.**
+:::
+
+
+# 3 — TP 1 : diagnostic empirique
+
+## Ce que vous produisez aujourd'hui
+
+Ouvrir `02-TP/TP1-faits-stylises.ipynb`
+
+::: {.small}
+| | Partie | Priorité |
+|---|---|---|
+| 1 | Statistiques descriptives comparées — et le choix d'annualisation | ⬤ |
+| 2 | Graphiques QQ contre normale et contre Student | ⬤ |
+| 3 | Stabilité de la kurtosis + estimateur de Hill | ○ |
+| 4 | Corrélogrammes de $r_t$ et de $\lvert r_t\rvert$ | ⬤ |
+| 5 | ADF et KPSS sur prix et rendements | ○ |
+| 6 | **Ratio de variance robuste**, $q \in \{2,4,8,16\}$ | ⬤ |
+| 7 | **Note de diagnostic — 2 pages** | ⬤ |
+:::
+
+::: {.piege}
+Les parties 1 à 6 sont mécaniques. **La partie 7 fait la note.**
+On y attend un jugement argumenté, pas une liste de résultats.
+:::
+
+
+## Ce qui est attendu dans la note
+
+::: {.small}
+✅ **Attendu**
+
+> « La kurtosis de SOL passe de 8 à 14 quand on étend l'échantillon de 500 à
+> 2 000 points, ce qui suggère que le moment d'ordre 4 n'est pas fini ; nous
+> utiliserons donc des mesures de risque non paramétriques. »
+
+> « Le $VR$ robuste rejette à $q=2$ mais pas à $q=16$ : l'écart à la marche
+> aléatoire est concentré à haute fréquence, ce qui évoque un effet de
+> microstructure plus qu'une prédictibilité exploitable. »
+
+❌ **Non attendu**
+
+> « Le test ADF donne une p-value de 0,43, donc le Bitcoin est non stationnaire. »
+> *(descriptif — c'est une lecture, pas une interprétation)*
+
+> « Le marché n'est pas efficient car Jarque-Bera rejette. »
+> *(faux raisonnement — JB ne teste pas l'efficience)*
+:::
+
+::: {.retenir}
+La différence : **résultat → mécanisme → conséquence opérationnelle**.
+:::
+
+
+## À rendre pour la séance 3
+
+**Note de diagnostic empirique** — 2 pages maximum, en binôme,
+avec le notebook exécuté.
+
+::: {.small}
+| Section | Contenu |
+|---|---|
+| 1. Données et choix méthodologiques | ½ page — période, actifs, calendrier retenu, **justification du facteur d'annualisation** |
+| 2. Faits stylisés | 1 page — tableau, QQ-plot, corrélogrammes, une phrase d'interprétation par résultat, comparaison crypto / traditionnel |
+| 3. Efficience | ½ page — ADF, KPSS, $VR$, et **conclusion argumentée** |
+:::
+
+::: {.retenir}
+**Préparez la séance 3** : relisez vos kurtosis. Nous calculerons une VaR
+gaussienne sur ces mêmes séries et mesurerons **exactement** de combien elle se
+trompe.
+
+Question à garder en tête : si la queue suit une loi de puissance avec
+$\alpha \approx 3$, que vaut un quantile calculé sous hypothèse normale ?
+:::
+
+
+## Références de la séance {.smaller}
+
+::: {.xsmall}
+**Faits stylisés — la référence centrale**
+
+- **Cont, R.** (2001), « Empirical properties of asset returns: stylized facts and statistical issues », *Quantitative Finance*, 1(2), 223-236.
+- **Hill, B.** (1975), « A Simple General Approach to Inference About the Tail of a Distribution », *Annals of Statistics*, 3(5), 1163-1174.
+- **Black, F.** (1976), « Studies of Stock Price Volatility Changes » — origine de l'explication de l'effet de levier.
+- **Campbell, J. & Hentschel, L.** (1992), « No News Is Good News », *JFE*, 31(3) — la rétroaction de volatilité.
+
+**Efficience**
+
+- **Lo, A. & MacKinlay, C.** (1988), « Stock Market Prices Do Not Follow Random Walks », *RFS*, 1(1), 41-66.
+- **Campbell, Lo & MacKinlay** (1997), *The Econometrics of Financial Markets*, Princeton UP — chapitre 2.
+- **Makarov, I. & Schoar, A.** (2020), « Trading and Arbitrage in Cryptocurrency Markets », *JFE*, 135(2), 293-319.
+- **Urquhart, A.** (2016), « The inefficiency of Bitcoin », *Economics Letters*, 148, 80-82.
+
+**Sur la fragilité des résultats empiriques — à lire avant le projet**
+
+- **McLean, R. D. & Pontiff, J.** (2016), « Does Academic Research Destroy Stock Return Predictability? », *Journal of Finance*, 71(1), 5-32.
+- **Harvey, C., Liu, Y. & Zhu, H.** (2016), « …and the Cross-Section of Expected Returns », *RFS*, 29(1), 5-68.
+:::
+
