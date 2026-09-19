@@ -1,0 +1,57 @@
+# Configuration du dépôt.
+#
+# Deux modes de rendu pour les séances :
+#
+#   quarto render 01-Slides/S1-fondamentaux.qmd
+#       → un fichier HTML UNIQUE, autonome, sans dépendance externe.
+#         C'est la version à projeter et à distribuer aux étudiants.
+#
+#   quarto render 01-Slides/S1-fondamentaux.qmd --profile tableau
+#       → active le tableau blanc (annotation en direct sur les slides,
+#         touche B pour le tableau, C pour le stylo). Le rendu part dans
+#         `_tableau/`, qui est exclu du dépôt.
+#
+# Le plugin chalkboard est incompatible avec `embed-resources`, d'où les
+# deux profils. Voir 01-Slides/README.md.
+
+project:
+  title: "Cryptomonnaies et Fintech — M2 MBFA"
+  # Tous les chunks s'exécutent depuis la racine du dépôt, quel que soit
+  # l'emplacement du document. Un notebook écrit "03-Data/..." fonctionne donc
+  # aussi bien depuis 01-Slides/ que depuis 01-Slides/etudiant/.
+  execute-dir: project
+  render:
+    - "00-Syllabus/*.qmd"
+    - "01-Slides/*.qmd"
+    - "01-Slides/etudiant/*.qmd"
+    - "04-Eval/*.qmd"
+    - "!99-Archive/"
+    # Les README se lisent en Markdown : inutile de les rendre en HTML.
+    - "!**/README.md"
+    - "!*.md"
+
+format:
+  revealjs:
+    theme: [default, theme.scss]
+    slide-number: c/t
+    show-slide-number: all
+    transition: none
+    width: 1280
+    height: 760
+    incremental: false
+    scrollable: true
+    code-line-numbers: false
+    embed-resources: true
+    chalkboard: false
+    html-math-method: mathjax
+
+# Libellés générés (table des matières, figures) en français
+lang: fr
+author: "Bilel Sanhaji — Université Paris 8"
+date: last-modified
+date-format: "D MMMM YYYY"
+
+execute:
+  echo: false
+  warning: false
+  message: false

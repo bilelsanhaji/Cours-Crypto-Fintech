@@ -87,8 +87,7 @@ Période : **2018-01-01 → aujourd'hui**, soit trois cycles complets.
 ## Compiler les slides vous-même
 
 ```bash
-cd 01-Slides/etudiant
-quarto render
+quarto render 01-Slides/etudiant
 ```
 
 Nécessite [Quarto](https://quarto.org/docs/get-started/). Les slides sont aussi

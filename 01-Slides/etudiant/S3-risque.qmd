@@ -1,7 +1,7 @@
 ---
 title: "Séance 3 — Mesurer et backtester le risque"
 subtitle: "Volatilité, VaR, Expected Shortfall · M2 MBFA, parcours Finance"
-# Configuration commune : 01-Slides/_quarto.yml
+# Configuration commune : _quarto.yml, à la racine du dépôt
 format:
   revealjs:
     footer: "M2 MBFA — Crypto & Fintech — Séance 3"
@@ -55,6 +55,27 @@ On ne prétend rien sur $\varepsilon_t$.
 
 
 # 1 — Estimer une volatilité qui bouge
+
+## Ce qu'on appelle « volatilité »
+
+::: {.definition}
+**Volatilité** — l'écart-type des rendements. Trois objets distincts portent ce nom :
+
+**Réalisée** — estimée sur un échantillon **passé**. C'est une statistique.
+
+**Conditionnelle** $\sigma_t$ — l'écart-type des rendements en $t$ **sachant
+l'information disponible en $t-1$**. C'est une prévision, et c'est ce qu'on veut.
+
+**Implicite** — celle qui égalise le prix de marché d'une option et son prix
+théorique. C'est une anticipation de marché, pas une mesure de l'histoire.
+:::
+
+::: {.retenir}
+Ce cours ne traite que la **volatilité conditionnelle** : c'est la seule qui
+réponde à « combien puis-je perdre **demain** ». Une volatilité réalisée sur huit
+ans ne décrit aucune journée que vous vivrez.
+:::
+
 
 ## Trois estimateurs, trois hypothèses
 
@@ -265,9 +286,21 @@ Une mesure de risque qui pénalise la diversification est indéfendable.
 
 ## Backtesting ① — le test de Kupiec
 
-Suite des **dépassements** : $\;I_t = \mathbb{1}\{-r_t > \text{VaR}_{\alpha,t}\}$
+::: {.definition}
+**Backtesting** — confronter, *a posteriori*, les prévisions d'un modèle de risque
+aux pertes réellement survenues. Ce n'est pas une validation du modèle : c'est un
+test de sa **calibration**.
 
-Sous un modèle correct, $I_t \sim \mathcal{B}(\alpha)$, donc $\mathbb{E}\big[\sum I_t\big] = \alpha T$.
+**Dépassement** (*exception*, *violation*) — une journée où la perte réalisée a
+excédé la VaR annoncée la veille :
+
+$$I_t = \mathbb{1}\{\,-r_t > \text{VaR}_{\alpha,t}\,\}$$
+:::
+
+Sous un modèle correctement calibré, $(I_t)$ doit se comporter comme une suite de
+**Bernoulli indépendantes de paramètre $\alpha$**. D'où deux exigences, et deux tests.
+
+**Exigence 1 — le bon nombre.** $\mathbb{E}\big[\sum_t I_t\big] = \alpha T$.
 
 $$LR_{uc} = -2\ln\!\left[\frac{(1-\alpha)^{T-N}\alpha^{N}}{(1-\hat\pi)^{T-N}\hat\pi^{N}}\right] \;\sim\; \chi^2(1)$$
 

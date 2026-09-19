@@ -1,7 +1,7 @@
 ---
 title: "Séance 1 — Anatomie d'une classe d'actifs"
 subtitle: "Cryptomonnaies et Fintech · M2 MBFA, parcours Finance"
-# Configuration commune : 01-Slides/_quarto.yml
+# Configuration commune : _quarto.yml, à la racine du dépôt
 format:
   revealjs:
     footer: "M2 MBFA — Crypto & Fintech — Séance 1"
@@ -16,19 +16,21 @@ format:
 ## Déroulé de la séance {.smaller}
 
 ::: {.small}
-| | | Durée | Ce qu'on y fait |
+| | | Durée | Question traitée |
 |---|---|---|---|
-| **1** | De la monnaie au token | 50 min | Ce que sont ces objets, et d'où vient leur prix |
-| | *pause* | 10 min | |
-| **2** | L'écosystème financier | 50 min | Où ils se traitent, et sous quel droit |
-| | *pause* | 10 min | |
-| **3** | TP 0 et étude de cas | 50 min | Vos premières données, et le krach de 2026 |
+| **1** | Le mécanisme | 50 min | Comment ça marche, concrètement ? |
+| **2** | Les objets et leurs marchés | 50 min | Qu'est-ce qui s'échange, où, sous quel droit ? |
+| **3** | TP 0 et étude de cas | 50 min | À quoi ressemblent ces données ? |
 :::
 
 ::: {.retenir}
-**Ce que vous saurez faire en sortant** — classer un crypto-actif dans une famille
-et dire d'où vient son prix · lire la structure d'un marché crypto · situer une
-opération dans le cadre MiCA · charger et décrire une série de prix crypto.
+**Le fil des trois séances**
+
+**S1** — de quoi parle-t-on ? · **S2** — en quoi ces séries sont-elles
+particulières ? · **S3** — combien peut-on perdre ?
+
+Un **panier de cinq actifs** — Bitcoin, Ethereum, Solana, S&P 500, or — constitué
+aujourd'hui et gardé jusqu'au projet final.
 :::
 
 
@@ -93,23 +95,7 @@ je dois pouvoir dire d'où il vient. **Cela vaut aussi pour vos rendus.**
 :::
 
 
-## Le fil des trois séances
-
-::: {.small}
-| | Question directrice | Ce que vous saurez faire |
-|---|---|---|
-| **S1** — aujourd'hui | De quoi parle-t-on ? | Classer un actif, lire un marché, situer une règle |
-| **S2** | En quoi ces séries sont-elles particulières ? | Établir les faits stylisés, tester l'efficience |
-| **S3** | Combien peut-on perdre ? | Estimer une VaR, la backtester, la critiquer |
-:::
-
-::: {.retenir}
-Le fil rouge est un **panier de cinq actifs** — Bitcoin, Ethereum, Solana,
-S&P 500, or — que vous constituez aujourd'hui et que vous garderez jusqu'au projet.
-:::
-
-
-# 1 — De la monnaie au token
+# 1 — Le mécanisme
 
 ## Le problème d'origine : la double dépense
 
@@ -147,7 +133,61 @@ intermédiaire identifié et régulé vers un mécanisme d'incitation et un logi
 :::
 
 
-## Ce qu'est une chaîne de blocs, en une image
+## Quatre objets, et rien d'autre
+
+::: {.definition}
+**Clé privée** — un nombre secret, tiré au hasard parmi $2^{256}$ possibles.
+Celui qui le détient contrôle les fonds. **Il n'existe aucun autre titre de
+propriété.**
+
+**Adresse** — dérivée de la clé privée par une fonction à sens unique. Publique.
+C'est l'équivalent d'un numéro de compte, mais personne ne l'attribue.
+
+**Transaction** — un message *signé* par la clé privée : « je transfère $x$
+unités de cette adresse vers celle-là ». La signature prouve la détention de la
+clé **sans jamais la révéler**.
+
+**Bloc** — un lot de transactions, horodaté et scellé.
+:::
+
+::: {.retenir}
+Il n'y a **pas de compte** chez un teneur de registre. La propriété *est* la
+détention de la clé.
+
+Deux conséquences financières directes : la perte de la clé est une perte
+définitive, et une transaction confirmée est **irréversible** — ni annulation, ni
+rétrofacturation, ni recours.
+:::
+
+
+## Le hachage : sceller sans cadenas
+
+::: {.definition}
+**Fonction de hachage** — une fonction qui transforme un message de taille
+quelconque en une **empreinte de taille fixe**.
+:::
+
+Trois propriétés, et elles suffisent à tout comprendre :
+
+::: {.small}
+| | Propriété | Conséquence |
+|---|---|---|
+| **1** | **Déterministe** — même message, même empreinte | L'empreinte identifie le message |
+| **2** | **À sens unique** — de l'empreinte on ne remonte pas au message | On peut publier l'empreinte sans révéler le contenu |
+| **3** | **Sensible** — un caractère change, l'empreinte change entièrement | Toute altération est immédiatement détectable |
+:::
+
+. . .
+
+::: {.retenir}
+Une empreinte est donc un **sceau**. Inscrire dans le bloc $n$ l'empreinte du bloc
+$n-1$, c'est sceller $n-1$ : on ne peut plus le modifier sans que cela se voie.
+
+C'est exactement ce que veut dire « chaîne » dans « chaîne de blocs ».
+:::
+
+
+## La chaîne : chaque bloc scelle le précédent
 
 <svg class="schema" viewBox="0 0 980 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chaîne de blocs et coût de réécriture">
   <defs>
@@ -210,6 +250,66 @@ intermédiaire identifié et régulé vers un mécanisme d'incitation et un logi
 Le coût d'une falsification croît avec sa **profondeur** dans la chaîne.
 D'où la règle empirique « attendre six confirmations » : après six blocs,
 réécrire coûte plus cher que ce qu'on peut voler.
+:::
+
+
+## Le minage : qui écrit le prochain bloc ?
+
+**Le problème** — n'importe qui peut proposer un bloc. Comment empêcher un
+participant de s'auto-désigner en continu, ou d'inonder le réseau de versions
+concurrentes ?
+
+::: {.definition}
+**Minage (preuve de travail)** — pour qu'un bloc soit valide, son empreinte doit
+commencer par un certain nombre de zéros.
+
+On ne peut pas *choisir* une empreinte. On modifie donc un compteur libre dans
+l'en-tête du bloc — le ***nonce*** — et on rehache, des milliards de fois par
+seconde, jusqu'à tomber sur une empreinte conforme.
+:::
+
+::: {.retenir}
+**L'asymétrie fondamentale** : la preuve est **très coûteuse à produire** —
+des milliards d'essais — et **gratuite à vérifier** — un seul hachage.
+
+C'est elle qui rend le dispositif possible. Le droit d'écrire s'achète en
+électricité, et chacun peut contrôler l'achat sans le refaire.
+:::
+
+::: {.small}
+La **difficulté** — le nombre de zéros exigé — est réajustée tous les 2 016 blocs,
+soit environ deux semaines, pour maintenir un bloc toutes les 10 minutes quelle
+que soit la puissance branchée sur le réseau.
+:::
+
+
+## La règle de consensus, et la double dépense résolue
+
+::: {.definition}
+**Règle de la chaîne la plus longue** — parmi plusieurs chaînes concurrentes, la
+chaîne valide est celle qui **cumule le plus de travail**.
+
+Aucun vote, aucune autorité : chaque participant applique la règle localement et
+aboutit à la même conclusion.
+:::
+
+. . .
+
+**Pourquoi cela résout le problème d'origine.** Pour annuler un paiement déjà
+inscrit, il faut publier une chaîne alternative partant d'avant la transaction —
+donc refaire le travail de tous les blocs depuis, **et** rattraper le réseau qui
+avance pendant ce temps.
+
+::: {.piege}
+Probabilité qu'un attaquant contrôlant une fraction $q$ rattrape un retard de
+$z$ blocs, tant que $q < 1-q$ :
+
+$$P(z) = \left(\frac{q}{1-q}\right)^{z}$$
+
+$q = 10\,\%$ : $P(6) \approx 1{,}9\times10^{-6}$ · $q = 30\,\%$ : $P(6) \approx 0{,}62\,\%$
+
+« Six confirmations » est donc une **convention**, pas un théorème — elle suppose
+qu'aucun acteur ne dépasse 10 à 20 % du réseau.
 :::
 
 
@@ -325,6 +425,38 @@ C'est d'ailleurs ce que font la comptabilité et la fiscalité.
 :::
 
 
+## Ce que « fintech » recouvre au-delà de la crypto
+
+::: {.columns}
+::: {.column width="50%"}
+### Paiements
+
+- Virement instantané — obligatoire dans l'UE depuis 2025
+- Portefeuilles électroniques, néobanques
+- Stablecoins comme **rail de règlement transfrontalier**
+:::
+::: {.column width="50%"}
+### Marchés de capitaux
+
+- **Tokenisation de titres** — fonds monétaires, obligations
+- Règlement-livraison quasi instantané
+- Monnaie numérique de banque centrale
+:::
+:::
+
+. . .
+
+::: {.retenir}
+Le point commun n'est pas la blockchain. C'est la **compression du délai et du
+coût de règlement**.
+
+La question que se pose un régulateur n'est pas « est-ce décentralisé ? » mais
+**« qui porte le risque si ça casse ? »**
+:::
+
+
+# 2 — Les objets et leurs marchés
+
 ## Cinq familles, cinq logiques de prix
 
 <svg class="schema" viewBox="0 0 980 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Carte des cinq familles de crypto-actifs">
@@ -387,38 +519,6 @@ Un stablecoin et un token de gouvernance n'ont **rien** en commun sur le plan
 financier — sinon le registre sur lequel ils circulent.
 :::
 
-
-## Ce que « fintech » recouvre au-delà de la crypto
-
-::: {.columns}
-::: {.column width="50%"}
-### Paiements
-
-- Virement instantané — obligatoire dans l'UE depuis 2025
-- Portefeuilles électroniques, néobanques
-- Stablecoins comme **rail de règlement transfrontalier**
-:::
-::: {.column width="50%"}
-### Marchés de capitaux
-
-- **Tokenisation de titres** — fonds monétaires, obligations
-- Règlement-livraison quasi instantané
-- Monnaie numérique de banque centrale
-:::
-:::
-
-. . .
-
-::: {.retenir}
-Le point commun n'est pas la blockchain. C'est la **compression du délai et du
-coût de règlement**.
-
-La question que se pose un régulateur n'est pas « est-ce décentralisé ? » mais
-**« qui porte le risque si ça casse ? »**
-:::
-
-
-# 2 — L'écosystème financier
 
 ## Où se traite un crypto-actif ?
 

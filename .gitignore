@@ -70,3 +70,5 @@ rendus/
 .Rhistory
 .RData
 .Ruserdata
+
+/.quarto/

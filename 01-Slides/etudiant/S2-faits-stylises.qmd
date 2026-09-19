@@ -1,7 +1,7 @@
 ---
 title: "Séance 2 — Le crypto-actif comme objet statistique"
 subtitle: "Faits stylisés et efficience · M2 MBFA, parcours Finance"
-# Configuration commune : 01-Slides/_quarto.yml
+# Configuration commune : _quarto.yml, à la racine du dépôt
 format:
   revealjs:
     footer: "M2 MBFA — Crypto & Fintech — Séance 2"
@@ -49,6 +49,29 @@ Cinq questions sur la séance 1, autocorrigées. **Non noté.**
 
 ::: {.question}
 Répondez d'abord seul, puis on corrige ensemble. Ce n'est pas noté.
+:::
+
+
+## Trois définitions préalables
+
+::: {.definition}
+**Rendement** — la variation relative du prix entre deux dates. C'est lui, et non
+le prix, qu'on modélise : les prix ne sont pas stationnaires, les rendements le
+sont approximativement.
+
+**Fait stylisé** — une régularité empirique observée de façon **robuste** sur un
+grand nombre d'actifs, de marchés et de périodes, sans être déduite d'un modèle.
+C'est une contrainte que tout modèle candidat doit reproduire.
+
+**Volatilité** — l'écart-type des rendements. *Réalisée* quand on l'estime sur un
+échantillon passé ; *conditionnelle* quand on la modélise comme dépendant de
+l'information disponible.
+:::
+
+::: {.retenir}
+Un fait stylisé n'est pas une loi. C'est une **régularité assez solide pour qu'un
+modèle qui la contredit soit suspect** — et assez grossière pour ne jamais suffire
+à identifier un modèle.
 :::
 
 
@@ -114,6 +137,16 @@ Sur des actions l'approximation passe. **Sur du crypto, elle ne passe pas.**
 
 
 ## Fait 2 — La distribution n'est pas normale
+
+::: {.definition}
+**Asymétrie** (*skewness*) — moment centré réduit d'ordre 3. Mesure le
+**déséquilibre** entre les deux côtés de la distribution.
+$S < 0$ : les pertes extrêmes l'emportent sur les gains extrêmes.
+
+**Kurtosis en excès** — moment centré réduit d'ordre 4, moins 3. Mesure
+l'**épaisseur des queues** relativement à la normale, dont la kurtosis vaut 3.
+$K > 0$ : les événements extrêmes sont plus fréquents que sous la normale.
+:::
 
 $$S = \mathbb{E}\!\left[\left(\tfrac{r-\mu}{\sigma}\right)^{3}\right]
 \qquad
@@ -318,6 +351,37 @@ Efficience = **« on ne peut pas gagner systématiquement avec cette information
 net de coûts et ajusté du risque »**.
 
 Un marché peut être efficient et absurdement volatil.
+:::
+
+
+## La marche aléatoire : trois versions, pas une
+
+$$p_t = \mu + p_{t-1} + \varepsilon_t \qquad (p_t = \ln P_t)$$
+
+Tout dépend de ce qu'on exige de $\varepsilon_t$ :
+
+::: {.definition}
+**RW1** — $\varepsilon_t$ **i.i.d.** Version la plus forte. Interdit toute
+dépendance, y compris dans les moments d'ordre 2.
+
+**RW2** — $\varepsilon_t$ **indépendants** mais non identiquement distribués.
+Autorise l'hétéroscédasticité.
+
+**RW3** — $\varepsilon_t$ seulement **non corrélés**. Version la plus faible.
+:::
+
+::: {.piege}
+Les crypto-actifs **violent RW1** de façon massive : l'agrégation de volatilité
+établie en partie 1 est une dépendance dans les carrés.
+
+Cela ne dit **rien** de RW3. Et c'est RW3 qui intéresse l'efficience, car c'est
+la corrélation des rendements — pas leur indépendance — qui ouvrirait une
+opportunité de gain.
+:::
+
+::: {.retenir}
+Le ratio de variance teste **RW3**. C'est le bon test, et c'est pourquoi on
+l'utilise plutôt que l'autocorrélation brute.
 :::
 
 

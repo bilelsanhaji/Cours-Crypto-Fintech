@@ -1,0 +1,28 @@
+# Profil « tableau » — pour projeter en salle avec annotation en direct.
+#
+#   quarto render 01-Slides/S1-fondamentaux.qmd --profile tableau
+#
+# Raccourcis en présentation :
+#   B  → tableau blanc plein écran
+#   C  → stylo (dessiner par-dessus la slide)
+#   DEL→ effacer
+#   D  → télécharger les annotations
+#   S  → vue présentateur (c'est là que s'affichent les notes de séance)
+#
+# Ce profil désactive embed-resources — le plugin chalkboard en a besoin —
+# et produit donc un HTML accompagné d'un dossier `*_files/`. Cette version
+# ne s'ouvre PAS chez un étudiant qui n'aurait que le fichier HTML.
+#
+# Pour qu'elle ne se mélange jamais avec la version distribuable, tout le
+# rendu « tableau » part dans `_tableau/`, qui est exclu du dépôt. La version
+# étudiante, elle, reste à côté des sources.
+
+project:
+  output-dir: _tableau
+
+format:
+  revealjs:
+    embed-resources: false
+    chalkboard:
+      theme: whiteboard
+      boardmarker-width: 4
