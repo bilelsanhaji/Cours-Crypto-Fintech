@@ -5,8 +5,8 @@
 # Notes d'expertise, déroulés minutés, FAQ, chiffres clés, articulation
 05-Enseignant/
 
-# Barèmes et corrigé du QCM. Les sujets de projet, eux, sont publiés.
-04-Eval/grilles-notation.md
+# Barèmes détaillés et corrigé du QCM.
+04-Eval/evaluation-en-seance.md
 04-Eval/qcm-verification.md
 
 # Corrigés des TP — diffusés séparément, après chaque séance
@@ -23,6 +23,9 @@
 01-Slides/*.html
 !01-Slides/etudiant/
 _build-version-etudiante.py
+
+# Document de coordination — destiné au collègue, pas aux étudiants
+00-Syllabus/synthese-coordination.qmd
 
 # Versions antérieures du syllabus
 99-Archive/
@@ -71,3 +74,5 @@ rendus/
 .Ruserdata
 
 /.quarto/
+
+**/*.quarto_ipynb

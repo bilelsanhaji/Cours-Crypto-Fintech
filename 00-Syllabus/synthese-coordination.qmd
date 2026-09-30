@@ -36,13 +36,17 @@ les flux, que disent les données. La compétence visée n'est pas « connaître
 crypto » — c'est **mesurer un risque sur un actif dont la distribution se comporte
 mal, et vérifier sa mesure**.
 
-Une séance installe les objets et les mécanismes ; deux séances sont consacrées au
-traitement économétrique de données réelles, sur machine.
+Les parties de cadrage installent les objets et les mécanismes ; quatre travaux
+pratiques notés portent le traitement économétrique de données réelles.
 
 ::: {.callout-note appearance="simple"}
-**Format** — 2 séances de 4 h 30, pause de 10 min par heure. Ordinateur
-portable obligatoire : la troisième partie de chaque séance est un TP en binômes.
-Python (`pandas`, `numpy`, `scipy`, `statsmodels`, `yfinance`).
+**Format** — 2 séances de 4 h 30, **16 h 30 – 21 h 00**, à une semaine
+d'intervalle. Cinq parties par séance, dont deux de TP notés. Ordinateur portable
+obligatoire. Python (`pandas`, `numpy`, `scipy`, `statsmodels`, `yfinance`).
+
+**Point à signaler** — j'ai fait le choix de **tout faire produire en séance** :
+aucun travail à la maison, aucun projet. Les conséquences pour le module, et ce
+que cela implique si nous évaluons ensemble, sont détaillées en section 7.
 :::
 
 # 2. Ce que je couvre
@@ -53,24 +57,25 @@ Python (`pandas`, `numpy`, `scipy`, `statsmodels`, `yfinance`).
 |:--|:--|:--|
 | 1 | Le mécanisme | Clé privée, adresse, transaction, bloc · hachage · minage · règle de consensus · budget de sécurité · preuve de travail contre preuve d'enjeu · le Bitcoin est-il de la monnaie ? |
 | 2 | Les objets et leurs marchés | Cinq familles de crypto-actifs · CEX contre DEX · teneur de marché automatisé et perte impermanente · contrat perpétuel et taux de financement · stablecoins · DeFi et tokenisation · **MiCA** |
-| 3 | TP 0 | Collecte de données, contrôle qualité, rendements · étude de cas du krach de 2026 |
+| 3 | TP 0 · **noté** | Collecte de données, contrôle qualité, rendements · krach de 2026 · fiche d'actif individuelle |
 | 4 | Faits stylisés | Cont (2001) : rendements log contre arithmétiques · moments d'ordre 3 et 4 · indice de queue (Hill) · agrégation de la volatilité · effet de levier · **le piège du calendrier 24/7** |
-| 5 | TP 1A | Diagnostic descriptif : moments, queues, corrélogrammes |
+| 5 | TP 1A · **noté** | Diagnostic descriptif : moments, queues, corrélogrammes, puis conclusion rédigée |
 
 **Séance 2 — Tester et mesurer** *(de la série à la mesure du risque)*
 
 | | Partie | Contenu |
 |:--|:--|:--|
 | 1 | Efficience et prédictibilité | Les trois formes · marche aléatoire RW1/RW2/RW3 · ADF et KPSS · **ratio de variance de Lo–MacKinlay** robuste · de la prédictibilité au profit |
-| 2 | TP 1B | Tests d'efficience, puis note de diagnostic sur les deux volets |
+| 2 | TP 1B · **noté** | Tests d'efficience, puis verdict argumenté sur l'efficience |
 | 3 | Estimer une volatilité qui bouge | Volatilité réalisée, glissante, **EWMA / RiskMetrics** · effet fantôme · calibrage de $\lambda$ |
 | 4 | VaR, ES, backtesting | **VaR** historique, gaussienne, Student, Monte Carlo · **Expected Shortfall** · **Kupiec et Christoffersen** · corrélations en régime de stress |
-| 5 | TP 2 et projet | Chaîne complète et verdict chiffré · lancement du projet |
+| 5 | TP 2 · **noté** | Chaîne complète : volatilité → VaR/ES → backtesting → verdict chiffré et recommandation |
 
 **Fil rouge** — un panier de cinq actifs (Bitcoin, Ethereum, Solana, S&P 500, or)
-constitué en séance 1 et conservé jusqu'au projet. Les TP sont **cumulatifs** :
-les données de la séance 1 servent en séance 2, et les moments mesurés au TP 1A
-servent d'entrée au calcul de VaR du TP 2.
+constitué en séance 1 et utilisé jusqu'au dernier TP. Les TP sont **cumulatifs**
+sur le fond, mais **autonomes techniquement** : chaque notebook recharge le
+panier, et les quatre rendus sont notés indépendamment — une absence ne pénalise
+qu'une seule fois.
 
 # 3. Ce que je ne couvre pas
 
@@ -85,7 +90,7 @@ souhaitez les prendre.
 | **Haute fréquence** | Carnets d'ordres, microstructure fine, volatilité réalisée intra-journalière. Je reste en données quotidiennes. |
 | **Dérivés crypto** | Valorisation d'options, volatilité implicite, surfaces. Je mentionne les perpétuels par leur mécanique, pas par leur valorisation. |
 | **Technique blockchain** | Cryptographie, contrats intelligents, développement. Je m'arrête au niveau fonctionnel nécessaire à l'analyse financière. |
-| **Données on-chain** | Hash rate, flux d'échanges, MVRV. Faute de source gratuite fiable ; reste ouvert en sujet de projet. |
+| **Données on-chain** | Hash rate, flux d'échanges, MVRV. Faute de source gratuite fiable. |
 | **Droit approfondi** | MiCA est traité en 6 minutes sous l'angle économique — qui porte le risque. Le détail juridique, les régimes nationaux, la fiscalité ne le sont pas. |
 | **Paiements et CBDC** | L'euro numérique est mentionné une minute. Les paiements de détail, l'inclusion financière, les corridors de transfert ne sont pas traités. |
 
@@ -158,34 +163,65 @@ comme un choix assumé plutôt que comme une incohérence. Savoir passer d'un
 langage à l'autre fait partie du métier.
 :::
 
-# 7. Évaluation
+# 7. Évaluation — un choix à discuter
 
-Mon volet est évalué par cinq composantes, avec la **reproductibilité notée** dans
-chaque rendu comportant du code :
+**Tout ce que je note est produit, rédigé et déposé pendant mes 9 heures.** Pas de
+devoir à la maison, pas de projet, pas d'examen terminal. Quatre rendus :
 
-| Composante | Poids de mon volet |
-|:--|:--|
-| Fiche d'actif — 1 page, individuelle | 10 % |
-| Note de diagnostic empirique — 2 pages, binôme | 20 % |
-| Rapport de risque — 2 pages, binôme | 20 % |
-| Projet final — notebook reproductible + note de 3 pages | 40 % |
-| Soutenance du projet — 7 min | 10 % |
+| | Composante | Quand | Poids de mon volet |
+|:--|:--|:--|:--|
+| **A** | Fiche d'actif express — *individuelle* | S1, partie 3 | 15 % |
+| **B** | Diagnostic descriptif — *TP 1A* | S1, partie 5 | 25 % |
+| **C** | Tests d'efficience — *TP 1B* | S2, partie 2 | 25 % |
+| **D** | Rapport de risque — *TP 2* | S2, partie 5 | 35 % |
+
+Chaque rendu est un notebook exécuté, clos par une **cellule de conclusion
+rédigée** qui porte l'essentiel de la note. La reproductibilité est notée dans les
+quatre.
+
+::: {.callout-warning appearance="simple"}
+**Ce que ce choix coûte, et ce qu'il rapporte** — à savoir avant d'en discuter.
+
+*Ce qu'on perd* : un travail autonome de plusieurs semaines évalue la capacité à
+construire une question, chercher, se tromper, recommencer. Rien de ce qui se
+fait en 45 minutes ne le remplace, et je ne prétends pas le contraire.
+
+*Ce qu'on gagne* : aucun plagiat, aucune sous-traitance, aucun rendu manquant, un
+usage des assistants IA régulé par la présence. Et je vois travailler chaque
+binôme, ce qu'un rendu écrit ne montre jamais.
+
+*Ce qu'il faut assumer* : le barème note le **jugement** plutôt que
+l'exhaustivité, et **la présence devient la variable critique** — un étudiant
+absent perd le rendu de la partie concernée.
+:::
 
 **Deux options pour le module.**
 
-*Évaluation séparée* — chacun note son volet, la note finale est la moyenne. Simple,
-aucune coordination nécessaire.
+*Évaluation séparée* — chacun note son volet, la note finale est la moyenne.
+Simple, aucune coordination nécessaire, et compatible avec mon format sans rien
+changer. **C'est l'option que je recommande.**
 
-*Évaluation commune* — je propose alors un **projet unique** plutôt que deux, pour
-éviter d'empiler les rendus sur des étudiants de M2 déjà chargés :
+*Évaluation commune* — possible, mais il faut trancher une question de principe :
+mon volet ne produit aucun travail hors séance. Si votre volet en demande un, le
+module devient hybride, ce qui est lisible pour les étudiants à condition de
+l'annoncer. Deux répartitions tiennent :
 
 | | Poids |
 |:--|:--|
-| Projet unique, commun aux deux volets | 50 % |
-| Rendus de mon volet (fiche, diagnostic, rapport de risque) | 25 % |
-| Rendus de votre volet | 25 % |
+| Mes quatre rendus en séance | 50 % |
+| Vos rendus (quelle qu'en soit la forme) | 50 % |
 
-C'est mon option préférée : un travail approfondi vaut mieux que deux superficiels.
+ou, si vous souhaitez un projet autonome commun :
+
+| | Poids |
+|:--|:--|
+| Projet unique, porté par votre volet | 40 % |
+| Mes quatre rendus en séance | 35 % |
+| Vos autres rendus | 25 % |
+
+Dans ce second cas, je peux fournir les données, les outils et trois questions de
+recherche chiffrables avec le panier du cours — mais je ne l'encadrerai pas en
+séance, mes 9 heures étant entièrement occupées.
 
 # 8. Ce qu'il me faut de votre part
 
@@ -193,7 +229,10 @@ C'est mon option préférée : un travail approfondi vaut mieux que deux superfi
 2. Traitez-vous le **socle** — blockchain, objets, régulation ?
 3. Quel **logiciel** ?
 4. Votre volet passe-t-il **avant ou après** le mien ?
-5. Évaluation **commune ou séparée** ?
+5. Évaluation **commune ou séparée** ? Et si commune : votre volet demande-t-il
+   du travail hors séance ?
+6. Vos séances sont-elles aussi sur le créneau **16 h 30 – 21 h 00** ?
 
-Les questions 1 et 2 sont les seules qui modifient réellement mon contenu. Les
-trois autres relèvent de l'organisation et peuvent se régler en séance.
+Les questions 1 et 2 sont les seules qui modifient réellement mon contenu. La
+question 5 est la seule qui demande une décision commune avant la première
+séance, puisqu'elle doit être annoncée aux étudiants dès le syllabus.

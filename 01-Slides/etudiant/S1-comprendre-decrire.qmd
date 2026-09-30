@@ -16,13 +16,13 @@ format:
 ## Déroulé de la séance {.smaller}
 
 ::: {.small}
-| | Partie | Ce qu'on y fait |
-|---|---|---|
-| **1** | Le mécanisme | Comment un registre sans teneur de registre fonctionne |
-| **2** | Les objets et leurs marchés | Ce qui s'échange, où, sous quel droit |
-| **3** | TP 0 — vos premières données | Le panier, et l'anatomie du krach de 2026 |
-| **4** | Faits stylisés | Ce qui distingue une série crypto d'une série actions |
-| **5** | TP 1A — diagnostic descriptif | Moments, queues, corrélogrammes |
+| | Partie | Ce qu'on y fait | |
+|---|---|---|---|
+| **16h30** | Le mécanisme | Comment un registre sans teneur de registre fonctionne | |
+| **17h25** | Les objets et leurs marchés | Ce qui s'échange, où, sous quel droit | |
+| **18h20** | TP 0 + fiche d'actif | Le panier, le krach de 2026 | **noté** |
+| **19h25** | Faits stylisés | Ce qui distingue une série crypto d'une série actions | |
+| **20h15** | TP 1A — diagnostic descriptif | Moments, queues, corrélogrammes | **noté** |
 :::
 
 ::: {.retenir}
@@ -30,7 +30,11 @@ format:
 La prochaine : de la série à la mesure du risque.
 
 Un **panier de cinq actifs** — Bitcoin, Ethereum, Solana, S&P 500, or —
-constitué aujourd'hui et gardé jusqu'au projet final.
+constitué aujourd'hui et utilisé jusqu'au dernier TP.
+
+**Tout se fait et se rend en séance.** Aucun travail à la maison :
+deux rendus aujourd'hui, deux la semaine prochaine.
+Pauses à 17 h 15, 18 h 10, **19 h 10 (quinze minutes)** et 20 h 10.
 :::
 
 
@@ -858,7 +862,7 @@ rachats d'ETF, débouclage de positions de base, arbitrages de portefeuille.
 :::
 
 
-## Débat cadré — 15 minutes
+## Prise de position — 7 minutes
 
 ::: {.columns}
 ::: {.column width="50%"}
@@ -889,7 +893,7 @@ On note les hypothèses au tableau — elles seront vérifiées en séance 2.
 :::
 
 ::: {.small}
-6 minutes de préparation · 4 minutes par groupe · 1 minute de synthèse
+Mains levées · deux arguments par camp, au tableau · 1 minute de synthèse
 :::
 
 
@@ -898,37 +902,40 @@ On note les hypothèses au tableau — elles seront vérifiées en séance 2.
 Ouvrir `02-TP/TP0-prise-en-main.ipynb`
 
 ::: {.small}
-| | Objectif | Priorité |
-|---|---|---|
-| 1 | Environnement fonctionnel | ⬤ |
-| 2 | Charger le panier et **contrôler la qualité des données** | ⬤ |
-| 3 | Prix en base 100, échelle logarithmique | ⬤ |
-| 4 | Rendements logarithmiques — et l'écart avec l'arithmétique | ⬤ |
-| 5 | Les 10 pires journées du Bitcoin — que faisait le S&P 500 ? | ○ |
-| 6 | Sauvegarder le panier pour les séances suivantes | ○ |
+| | Objectif |
+|---|---|
+| 1 | Environnement fonctionnel |
+| 2 | Charger le panier et **contrôler la qualité des données** |
+| 3 | Prix en base 100, échelle logarithmique |
+| 4 | Rendements logarithmiques — et l'écart avec l'arithmétique |
+| 5 | Les 10 pires journées du Bitcoin — que faisait le S&P 500 ? |
+| 6 | Sauvegarder le panier pour la séance 2 |
 :::
 
 ::: {.retenir}
-En binômes. ⬤ = à faire en séance · ○ = finissable chez vous.
+**20 minutes, en binômes.** Les parties 5 et 6 sont déjà écrites : exécutez-les.
 Si l'API échoue : `03-Data/backup/panier.csv`.
 :::
 
 
-## À rendre pour la séance 2
+## Fiche d'actif express — noté, 15 %
 
-**Fiche d'actif — 1 page, individuelle.**
+**18 minutes, individuelle, maintenant.** Dans la dernière cellule du TP 0.
 Un crypto-actif au choix, **hors Bitcoin et Ethereum**.
 
 ::: {.small}
-1. À quelle **famille** appartient-il ? (les cinq de la partie 1)
-2. Quel est son **mécanisme d'offre** ? Fixe, inflationniste, déflationniste ?
-3. **D'où vient sa valeur** — un flux, un usage, une rareté, une promesse ?
-4. Quels sont ses **trois principaux risques** ?
-5. Quelle **source** avez-vous utilisée, et **qui la finance** ?
+| | Question | Points |
+|---|---|---|
+| 1 | À quelle **famille** appartient-il, et **pourquoi** ? | 4 |
+| 2 | Quel **mécanisme d'offre** — fixe, inflationniste, déflationniste ? | 3 |
+| 3 | **D'où vient sa valeur** — un flux, un usage, une rareté, une promesse ? | 4 |
+| 4 | Deux **risques distincts**, développés | 4 |
+| 5 | Quelle **source**, et **qui la finance** ? | 5 |
 :::
 
 ::: {.piege}
-La question 5 est notée comme les quatre autres.
+**La question 5 vaut le plus.** Cherchez en ligne — c'est le but.
+Dépôt sur l'ENT avant la fin de la partie.
 :::
 
 
@@ -1256,18 +1263,17 @@ Cela contamine ensuite le ratio de Sharpe et toute comparaison crypto / actions.
 Ouvrir `02-TP/TP1A-faits-stylises.ipynb`
 
 ::: {.small}
-| | Partie | Priorité |
+| | Partie | |
 |---|---|---|
 | 1 | Statistiques descriptives comparées — et le choix d'annualisation | ⬤ |
 | 2 | Graphiques QQ contre normale et contre Student | ⬤ |
-| 3 | Stabilité de la kurtosis + estimateur de Hill | ○ |
+| 3 | Stabilité de la kurtosis + estimateur de Hill | ⬤ |
 | 4 | Corrélogrammes de $r_t$ et de $\lvert r_t\rvert$ | ⬤ |
-| 5 | Effet de levier — le signe n'est pas garanti | ○ |
+| 4.2 | Effet de levier — le signe n'est pas garanti | bonus |
 :::
 
 ::: {.retenir}
-⬤ = à faire maintenant · ○ = finissable chez vous.
-**La suite du diagnostic — les tests d'efficience — se fera en séance 2**, une
-fois le cadre posé. Gardez votre notebook.
+**Noté — 25 %.** 27 min de code, puis la **cellule de conclusion** : c'est elle
+qui porte l'essentiel de la note. Dépôt de l'export HTML avant 21 h 00.
 :::
 

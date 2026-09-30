@@ -16,13 +16,17 @@ format:
 ## Déroulé de la séance {.smaller}
 
 ::: {.small}
-| | Partie | Ce qu'on y fait |
-|---|---|---|
-| **1** | Efficience et prédictibilité | Tester la marche aléatoire — et savoir lire un rejet |
-| **2** | TP 1B — tests d'efficience | La suite du diagnostic, puis la note |
-| **3** | Estimer une volatilité qui bouge | Trois estimateurs, et pourquoi λ = 0,94 ne va pas |
-| **4** | VaR, Expected Shortfall, backtesting | Mesurer le risque — et **prouver** que la mesure tient |
-| **5** | TP 2 et lancement du projet | Votre verdict chiffré, votre sujet validé |
+| | Partie | Ce qu'on y fait | |
+|---|---|---|---|
+| **16h30** | Efficience et prédictibilité | Tester la marche aléatoire — et lire un rejet | |
+| **17h25** | TP 1B — tests d'efficience | La suite du diagnostic, et son verdict | **noté** |
+| **18h20** | Estimer une volatilité qui bouge | Trois estimateurs, et pourquoi λ = 0,94 ne va pas | |
+| **19h20** | VaR, Expected Shortfall, backtesting | Mesurer le risque — et **prouver** que la mesure tient | |
+| **20h10** | TP 2 — rapport de risque | Votre verdict chiffré, rédigé et déposé | **noté** |
+:::
+
+::: {.small}
+Pauses à 17 h 15, 18 h 10, **19 h 05 (quinze minutes)** et 20 h 05.
 :::
 
 ::: {.retenir}
@@ -246,7 +250,7 @@ professionnelle.
 **Hypothèse testable, avec vos données** : l'efficience du Bitcoin s'est-elle
 améliorée depuis le **11 janvier 2024** (lancement des ETF au comptant) ?
 
-Comparer $VR(q)$ avant et après. **C'est le sujet de projet n° 1.**
+Comparer $VR(q)$ avant et après. **C'est la question bonus du TP 1B.**
 :::
 
 
@@ -257,18 +261,17 @@ Comparer $VR(q)$ avant et après. **C'est le sujet de projet n° 1.**
 Rouvrir `02-TP/TP1B-efficience.ipynb`
 
 ::: {.small}
-| | Partie | Priorité |
+| | Partie | |
 |---|---|---|
 | 1 | ADF et KPSS sur prix et rendements | ⬤ |
 | 2 | **Ratio de variance robuste**, $q \in \{2,4,8,16\}$ | ⬤ |
 | 3 | Comparaison robuste / non robuste | ⬤ |
-| 4 | Avant / après janvier 2024 — l'effet des ETF | ○ |
-| 5 | **Note de diagnostic — 2 pages** | ⬤ |
+| 4 | Avant / après janvier 2024 — l'effet des ETF | bonus |
 :::
 
 ::: {.piege}
-Les parties 1 à 4 sont mécaniques. **La partie 5 fait la note.**
-On y attend un jugement argumenté, pas une liste de résultats.
+**Noté — 25 %.** Le code est mécanique. **La cellule de conclusion fait la note** :
+on y attend un jugement argumenté, pas une liste de résultats.
 :::
 
 
@@ -299,26 +302,19 @@ La différence : **résultat → mécanisme → conséquence opérationnelle**.
 :::
 
 
-## À rendre — note de diagnostic
+## Dépôt, puis la suite
 
-**Note de diagnostic empirique** — 2 pages maximum, en binôme,
-avec le notebook exécuté.
-
-::: {.small}
-| Section | Contenu |
-|---|---|
-| 1. Données et choix méthodologiques | ½ page — période, actifs, calendrier retenu, **justification du facteur d'annualisation** |
-| 2. Faits stylisés | 1 page — tableau, QQ-plot, corrélogrammes, une phrase d'interprétation par résultat, comparaison crypto / traditionnel |
-| 3. Efficience | ½ page — ADF, KPSS, $VR$, et **conclusion argumentée** |
-:::
+**Il reste 5 minutes.** `Restart & Run All`, export HTML, dépôt sur l'ENT.
+Un notebook qui ne s'exécute pas n'est pas corrigé.
 
 ::: {.retenir}
-**Pour la partie 4** : gardez vos kurtosis sous la main. Nous calculerons une VaR
+**Gardez vos kurtosis sous la main.** En partie 4, nous calculerons une VaR
 gaussienne sur ces mêmes séries et mesurerons **exactement** de combien elle se
 trompe.
 
-Question à garder en tête : si la queue suit une loi de puissance avec
-$\alpha \approx 3$, que vaut un quantile calculé sous hypothèse normale ?
+La question à garder en tête pendant la pause : si la queue suit une loi de
+puissance avec $\alpha \approx 3$, que vaut un quantile calculé sous hypothèse
+normale ?
 :::
 
 
@@ -612,30 +608,30 @@ mais les subit **en rafale** — ce qu'un appel de marge ne pardonne pas.
 :::
 
 
-# 5 — TP 2 et lancement du projet
+# 5 — TP 2 : le rapport de risque
 
 ## Chaîne complète de gestion du risque
 
 Ouvrir `02-TP/TP2-risque-backtesting.ipynb`
 
 ::: {.xsmall}
-| | Étape | Priorité |
+| | Étape | |
 |---|---|---|
 | 1 | Trois estimateurs de volatilité tracés autour d'un choc | ⬤ |
-| 2 | Estimation de $\lambda$ par minimisation de l'erreur — comparer à 0,94 | ○ |
-| 3 | Quatre VaR à 1 %, en fenêtre glissante | ⬤ |
-| 4 | Expected Shortfall et rapport ES/VaR | ○ |
-| 5 | Graphique des dépassements | ⬤ |
-| 6 | **Kupiec + Christoffersen → tableau de verdict** | ⬤ |
-| 7 | Corrélation glissante BTC / S&P 500, avant et après janvier 2024 | ○ |
-| 8 | **Rapport de risque, 2 pages, avec recommandation motivée** | ⬤ |
+| 2 | Quatre VaR à 1 %, en fenêtre glissante | ⬤ |
+| 3 | Expected Shortfall et rapport ES/VaR | ⬤ |
+| 4 | Dépassements, **Kupiec + Christoffersen → verdict** | ⬤ |
+| | **Cellule de conclusion** — 20 lignes, elle fait la note | ⬤ |
+| A | Calibrer $\lambda$ plutôt que le supposer | bonus |
+| B | Corrélations en régime de stress | bonus |
 :::
 
 ::: {.piege}
-Le rapport doit se terminer par : *« pour un portefeuille de ce type et à cet
-horizon, nous recommandons la méthode X, parce que… ; sa principale limite est… »*
+**35 % de la note.** La conclusion doit se terminer par : *« pour un portefeuille
+de ce type et à cet horizon, nous recommandons la méthode X, parce que… ; sa
+principale limite est… »* Sans cette phrase, le rendu est incomplet.
 
-Sans cette phrase, le rapport est incomplet.
+35 min de code · 10 min de rédaction · 5 min de dépôt.
 :::
 
 
@@ -657,29 +653,26 @@ apparente **même sous normalité bivariée à corrélation constante**
 (Boyer, Gibson & Loretan, 1999).
 
 Une « contagion » mesurée par une hausse de corrélation en période de stress peut
-être un **pur artefact**. À mentionner obligatoirement dans votre rapport.
+être un **pur artefact**. À mentionner si vous exploitez ce résultat.
 :::
 
 
-## Le projet final
-
-**Binômes · notebook reproductible + note de 3 pages · soutenance de 7 minutes**
+## Les quatre rendus, et ce qui les note
 
 ::: {.small}
-| | Question |
-|---|---|
-| **1** | L'arrivée des ETF au comptant (11 janvier 2024) a-t-elle modifié le profil de risque du Bitcoin ? |
-| **2** | Quelle méthode de VaR pour un portefeuille 80 % actions / 20 % crypto ? |
-| **3** | Le Bitcoin est-il une couverture, une diversification, ou un simple actif de risque ? *(cadre de Baur & Lucey)* |
-| **4** | Un stablecoin décroche-t-il de façon prévisible ? |
-| **5** | Sujet libre — **validé avant la fin de la séance**. |
+| | Rendu | Quand | Poids |
+|---|---|---|---|
+| **A** | Fiche d'actif express | S1, partie 3 | 15 % |
+| **B** | Diagnostic descriptif | S1, partie 5 | 25 % |
+| **C** | Tests d'efficience | S2, partie 2 | 25 % |
+| **D** | Rapport de risque | S2, partie 5 | 35 % |
 :::
 
 ::: {.definition}
 **Trois exigences non négociables**
 
 1. **Reproductibilité** — *Restart & Run All* doit fonctionner. Graine fixée, chemins relatifs.
-2. **Section « limites »** obligatoire, et **notée**.
+2. **Une limite reconnue** dans chaque conclusion, et elle est **notée**.
 3. **Aucune recommandation d'investissement.** L'objet est l'analyse du risque.
 :::
 

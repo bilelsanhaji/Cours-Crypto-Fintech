@@ -70,7 +70,7 @@ séance se fait sur machine, en binômes.
 
 ## Le panier du fil rouge
 
-Les mêmes cinq actifs servent de la première séance au projet final :
+Les mêmes cinq actifs servent de la première séance au dernier TP :
 
 | Actif | Ticker | Pourquoi lui |
 |---|---|---|
@@ -105,19 +105,21 @@ distribuées en HTML autonome — un seul fichier, qui fonctionne hors ligne.
 
 ## Évaluation
 
-| Composante | Poids |
-|---|---|
-| Fiche d'actif | 10 % |
-| Note de diagnostic empirique | 20 % |
-| Rapport de risque | 20 % |
-| Projet final — écrit | 40 % |
-| Projet final — soutenance | 10 % |
+**Quatre rendus, tous produits et déposés en séance.** Ni devoir à la maison, ni
+projet, ni examen terminal.
 
-Le détail, les sujets et les attendus sont dans `04-Eval/sujets-projet.md`.
+| | Composante | Quand | Poids |
+|---|---|---|---|
+| **A** | Fiche d'actif express — *individuelle* | S1, partie 3 | 15 % |
+| **B** | Diagnostic descriptif — *TP 1A* | S1, partie 5 | 25 % |
+| **C** | Tests d'efficience — *TP 1B* | S2, partie 2 | 25 % |
+| **D** | Rapport de risque — *TP 2* | S2, partie 5 | 35 % |
 
-**La reproductibilité est notée** dans chaque rendu comportant du code : un
-notebook qui ne s'exécute pas de bout en bout après *Restart & Run All* est
-sanctionné, quelle que soit la qualité de l'analyse.
+Chaque rendu est un notebook exécuté, exporté en HTML, clos par une **cellule de
+conclusion rédigée** — c'est elle qui porte l'essentiel de la note.
+
+**La reproductibilité est notée** : un notebook qui ne s'exécute pas de bout en
+bout après *Restart & Run All* n'est pas corrigé.
 
 ---
 

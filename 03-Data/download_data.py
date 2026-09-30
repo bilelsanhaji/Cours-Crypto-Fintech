@@ -29,7 +29,7 @@ import numpy as np
 import pandas as pd
 
 # --------------------------------------------------------------------------- #
-# Panier du fil rouge — utilisé de la séance 1 au projet final
+# Panier du fil rouge — utilisé de la séance 1 au dernier TP
 # --------------------------------------------------------------------------- #
 PANIER = {
     "BTC-USD": "Bitcoin",

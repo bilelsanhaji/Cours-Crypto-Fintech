@@ -25,11 +25,12 @@ cet enseignement de 9 h traite les crypto-actifs comme une **classe d'actifs à 
 entière**, avec ses instruments, sa microstructure, son cadre réglementaire et,
 surtout, ses propriétés statistiques particulières.
 
-Le parti pris est celui de la **finance quantitative appliquée** : après une séance
-de cadrage qui donne aux étudiants le vocabulaire et les mécanismes indispensables,
-deux séances sont consacrées au traitement économétrique de données réelles. À la
-sortie, un étudiant doit pouvoir dire *ce qu'est* un stablecoin, *pourquoi* la VaR
-gaussienne échoue sur le Bitcoin, et *le démontrer* sur un notebook reproductible.
+Le parti pris est celui de la **finance quantitative appliquée** : les parties de
+cadrage donnent le vocabulaire et les mécanismes indispensables, et **quatre
+travaux pratiques notés, produits intégralement en séance**, portent le traitement
+économétrique de données réelles. À la sortie, un étudiant doit pouvoir dire *ce
+qu'est* un stablecoin, *pourquoi* la VaR gaussienne échoue sur le Bitcoin, et *le
+démontrer* sur un notebook reproductible.
 
 ::: {.callout-note}
 ## Positionnement dans le module
@@ -47,12 +48,13 @@ vous sachiez ce que vous devez chercher ailleurs.
 | | |
 |---|---|
 | **Public** | M2 Monnaie, Banque, Finance, Assurance — parcours Finance |
-| **Volume** | 9 h — 2 séances de 4 h 30 |
+| **Volume** | 9 h — 2 séances de 4 h 30, **16 h 30 – 21 h 00**, à une semaine d'intervalle |
 | **Format** | Cours magistral appliqué + travaux pratiques sur machine |
 | **Prérequis théoriques** | Séries temporelles (stationnarité, autocorrélation, rendements) ; statistique inférentielle (tests d'hypothèses) |
 | **Prérequis techniques** | Python : manipulation de `DataFrame` pandas, tracé matplotlib |
 | **Logiciels** | Python ≥ 3.10, JupyterLab, `pandas`, `numpy`, `scipy`, `statsmodels`, `yfinance` |
-| **Matériel** | Ordinateur portable **obligatoire** (les TP se font en séance) |
+| **Matériel** | Ordinateur portable **obligatoire** — sans machine, aucun rendu n'est possible |
+| **Travail personnel** | **Aucun.** Les quatre travaux notés sont produits et déposés pendant les 9 heures |
 | **Dépôt du cours** | Notebooks, données et slides fournis en début de séance |
 
 ---
@@ -96,26 +98,31 @@ vous sachiez ce que vous devez chercher ailleurs.
 
 | | Séance | Question directrice | Livrable étudiant |
 |---|---|---|---|
-| **S1** | Comprendre et décrire | *De quoi parle-t-on, et en quoi ces séries sont-elles particulières ?* | Fiche d'actif (1 page) + panier constitué |
-| **S2** | Tester et mesurer | *Que peut-on prévoir, et combien peut-on perdre ?* | Note de diagnostic + rapport de risque + projet |
+| **S1** | Comprendre et décrire | *De quoi parle-t-on, et en quoi ces séries sont-elles particulières ?* | Fiche d'actif · diagnostic descriptif |
+| **S2** | Tester et mesurer | *Que peut-on prévoir, et combien peut-on perdre ?* | Tests d'efficience · rapport de risque |
 
-Chaque séance dure **4 h 30** et compte **cinq parties de 50 minutes**, avec des
-pauses régulières. Les parties magistrales alternent avec les TP :
+Chaque séance compte **cinq parties**, dont **deux de travaux pratiques notés**.
+Les parties magistrales et les TP alternent :
 
-| Séance 1 | | Séance 2 | |
-|---|---|---|---|
-| 1 | Le mécanisme | 1 | Efficience et prédictibilité |
-| 2 | Les objets et leurs marchés | 2 | **TP 1B** — tests d'efficience |
-| 3 | **TP 0** — vos premières données | 3 | Estimer une volatilité qui bouge |
-| 4 | Faits stylisés | 4 | VaR, Expected Shortfall, backtesting |
-| 5 | **TP 1A** — diagnostic descriptif | 5 | **TP 2** et lancement du projet |
+| | Séance 1 | Séance 2 |
+|---|---|---|
+| **16h30** | Le mécanisme | Efficience et prédictibilité |
+| **17h25** | Les objets et leurs marchés | **TP 1B** — tests d'efficience · *noté* |
+| **18h20** | **TP 0** + fiche d'actif · *noté* | Estimer une volatilité qui bouge |
+| **19h25** / 19h20 | Faits stylisés | VaR, Expected Shortfall, backtesting |
+| **20h15** / 20h10 | **TP 1A** — diagnostic descriptif · *noté* | **TP 2** — rapport de risque · *noté* |
+
+Pauses à 17 h 15, 18 h 10, puis une **pause longue de 15 minutes** vers 19 h,
+et une dernière avant le TP final.
 
 ::: {.callout-note}
 ## Un fil rouge cumulatif
 Un **panier de cinq actifs** — Bitcoin, Ethereum, Solana, S&P 500, or — est
-constitué en séance 1 et conservé jusqu'au projet final. Les données de S1 servent
-en S2, et les résultats de S2 servent d'entrée aux calculs de S3. Ne manquez pas
-une séance sans récupérer le notebook correspondant.
+constitué en séance 1 et utilisé jusqu'au dernier TP.
+
+Les notebooks de la séance 2 rechargent eux-mêmes le panier : une absence en
+séance 1 ne bloque aucun rendu de la séance 2, et **les quatre travaux sont notés
+indépendamment les uns des autres**.
 :::
 
 ---
@@ -126,7 +133,7 @@ une séance sans récupérer le notebook correspondant.
 
 *De l'objet à la série. La séance bascule en partie 4 : on quitte la description institutionnelle pour traiter les mêmes objets comme des séries statistiques.*
 
-**Partie 1 (50 min) — Le mécanisme**
+**Partie 1 (16 h 30) — Le mécanisme**
 
 - Le problème d'origine : la **double dépense** sans tiers de confiance.
 - Les **quatre objets** et rien d'autre : clé privée, adresse, transaction, bloc.
@@ -145,7 +152,7 @@ une séance sans récupérer le notebook correspondant.
 - Le Bitcoin est-il de la monnaie ? Confrontation aux trois fonctions. Le cas du
   Salvador, dont le cours légal a été **abrogé en janvier 2025**.
 
-**Partie 2 (50 min) — Les objets et leurs marchés**
+**Partie 2 (17 h 25) — Les objets et leurs marchés**
 
 - **Taxonomie opérationnelle** en cinq familles, chacune avec sa logique de prix :
   actif à offre rigide (BTC), token de plateforme avec flux (ETH : frais brûlés et
@@ -165,22 +172,23 @@ une séance sans récupérer le notebook correspondant.
   européen), GENIUS Act aux États-Unis, euro numérique. Conséquences concrètes
   pour un gérant.
 
-**Partie 3 (50 min) — TP 0 : constituer le panier + étude de cas**
+**Partie 3 (18 h 20) — TP 0 : constituer le panier, puis la fiche d'actif**
 
-- Prise en main de l'environnement, collecte des données, premier graphique de
-  prix normalisés, calcul des rendements logarithmiques.
-- Étude de cas dirigée : **anatomie du krach de 2026**. Les étudiants
-  reconstituent la chronologie et hiérarchisent les causes (resserrement
-  monétaire, sorties d'ETF, désendettement) à partir des données.
+- **Anatomie du krach de 2026**, en 7 minutes : chronologie, hiérarchie des
+  causes (resserrement monétaire, sorties d'ETF, désendettement), et une prise de
+  position dont les hypothèses seront testées en séance 2.
+- **TP 0** : prise en main de l'environnement, collecte des données, graphique de
+  prix normalisés, rendements logarithmiques.
 
-> **Livrable** — Fiche d'actif d'une page sur un crypto-actif au choix (hors BTC
-> et ETH) : famille, mécanisme d'offre, source de valeur, principaux risques.
+> **Rendu A, déposé avant 19 h 10** — Fiche d'actif express, **individuelle**, sur
+> un crypto-actif au choix (hors BTC et ETH) : famille et justification, mécanisme
+> d'offre, source de valeur, deux risques, **et qui finance la source utilisée**.
 
 ---
 
 #### Partie 4 (50 min) — Faits stylisés
 
-**Partie 4 (50 min) — Faits stylisés**
+**Partie 4 (19 h 25) — Faits stylisés**
 
 - Rendements arithmétiques vs logarithmiques : pourquoi le choix compte quand la
   volatilité quotidienne atteint 5 %.
@@ -196,14 +204,15 @@ une séance sans récupérer le notebook correspondant.
 - Corrélations : le découplage supposé crypto/actions et sa remise en cause
   depuis l'arrivée des ETF au comptant.
 
-**Partie 5 (50 min) — TP 1A : diagnostic descriptif**
+**Partie 5 (20 h 15) — TP 1A : diagnostic descriptif**
 
 Les étudiants produisent, sur leur panier, le tableau complet des faits stylisés :
 statistiques descriptives comparées, graphiques quantile-quantile, stabilité de la
 kurtosis, estimateur de Hill, corrélogrammes de $r_t$ et de $\lvert r_t\rvert$.
 
-> **TP / Livrable** — notebook à conserver : la note de diagnostic portera sur ce
-> volet **et** sur les tests d'efficience de la séance 2.
+> **Rendu B, déposé avant 21 h 00** — notebook exécuté et **cellule de conclusion**
+> : facteur d'annualisation justifié, stabilité de la kurtosis interprétée, lecture
+> des deux corrélogrammes, une différence nette entre crypto et actif traditionnel.
 
 ---
 
@@ -211,7 +220,7 @@ kurtosis, estimateur de Hill, corrélogrammes de $r_t$ et de $\lvert r_t\rvert$.
 
 *De la série à la mesure du risque.*
 
-**Partie 1 (50 min) — Efficience et prédictibilité**
+**Partie 1 (16 h 30) — Efficience et prédictibilité**
 
 - Hypothèse d'efficience : les trois formes, et ce que chacune permet réellement
   de tester. Efficience ≠ prix « juste ».
@@ -224,16 +233,17 @@ kurtosis, estimateur de Hill, corrélogrammes de $r_t$ et de $\lvert r_t\rvert$.
   exploitables ? Coûts de transaction, écart achat-vente, dragage de données,
   disparition des anomalies après publication.
 
-**Partie 2 (50 min) — TP 1B : tests d'efficience**
+**Partie 2 (17 h 25) — TP 1B : tests d'efficience**
 
-Reprise du diagnostic : tests de racine unitaire (ADF, KPSS), ratio de variance
-robuste, comparaison robuste / non robuste, et l'effet des ETF au comptant.
+Tests de racine unitaire (ADF, KPSS), ratio de variance robuste, comparaison
+robuste / non robuste. En bonus : l'effet des ETF au comptant.
 
-> **TP / Livrable** — **Note de diagnostic empirique** (2 pages max) portant sur
-> les deux volets du TP 1 : tableau de statistiques comparées, graphique QQ,
-> résultats des tests, et **une conclusion argumentée** sur l'efficience.
+> **Rendu C, déposé avant 18 h 20** — notebook exécuté et **cellule de conclusion**
+> : ce que disent ADF et KPSS et pourquoi cela ne suffit pas, à quels horizons le
+> ratio de variance rejette, et **un verdict argumenté** — prédictibilité
+> exploitable, effet de microstructure, ou absence de preuve.
 
-**Partie 3 (50 min) — Estimer une volatilité qui bouge**
+**Partie 3 (18 h 20) — Estimer une volatilité qui bouge**
 
 - Volatilité réalisée sur fenêtre fixe : ce qu'elle mesure, ce qu'elle rate.
 - Volatilité glissante : arbitrage biais/variance dans le choix de la fenêtre ;
@@ -244,7 +254,7 @@ robuste, comparaison robuste / non robuste, et l'effet des ETF au comptant.
 - Comparaison des trois estimateurs sur un choc réel : lequel réagit, lequel
   retarde, lequel persiste ?
 
-**Partie 4 (50 min) — VaR, Expected Shortfall et backtesting**
+**Partie 4 (19 h 20) — VaR, Expected Shortfall et backtesting**
 
 - VaR : définition, horizon, seuil. Quatre estimateurs comparés — historique,
   gaussienne, Student-*t* (avec estimation du degré de liberté), Monte Carlo.
@@ -259,48 +269,62 @@ robuste, comparaison robuste / non robuste, et l'effet des ETF au comptant.
 - Corrélations glissantes crypto/actions : la diversification s'évanouit-elle
   précisément quand on en a besoin ?
 
-**Partie 5 (50 min) — TP 2 + lancement du projet**
+**Partie 5 (20 h 10) — TP 2, le rapport de risque**
 
 - Chaîne complète : estimation de volatilité → VaR/ES → backtesting → verdict.
-- Présentation des sujets de projet et constitution des binômes. Chaque binôme
-  repart avec une question de recherche validée.
+- Deux volets bonus pour ceux qui terminent : calibrage de $\lambda$, corrélations
+  en régime de stress.
 
-> **Livrable** — Rapport de risque : tableau comparatif des quatre VaR, graphique
-> des dépassements, résultats des tests de Kupiec et Christoffersen, et
-> **recommandation** motivée d'un estimateur.
+> **Livrable, déposé avant 21 h 00** — Rapport de risque : tableau comparatif des
+> quatre VaR, graphique des dépassements, résultats des tests de Kupiec et
+> Christoffersen, et **recommandation** motivée d'un estimateur, avec sa limite.
 
 ---
 
 ## Méthodes pédagogiques
 
-- **Un panier filé** sur les deux séances : les données de la séance 1 servent aux
-  séances 2 et 3, ce qui rend la progression cumulative et évite les
-  redémarrages à froid.
+- **Tout se fait en séance.** Les quatre travaux notés sont produits, rédigés et
+  déposés pendant les 9 heures. Aucun travail à la maison, aucun rendu différé.
+- **Un panier filé** sur les deux séances, ce qui rend la progression cumulative
+  et évite les redémarrages à froid. Les notebooks de la séance 2 le rechargent
+  eux-mêmes : une absence ne bloque aucun rendu ultérieur.
 - **Notebooks à trous** : le code d'infrastructure (import, mise en forme,
   graphiques) est fourni ; les étudiants écrivent les cellules qui portent le
-  raisonnement. Cela protège les 50 minutes de TP contre les problèmes techniques.
+  raisonnement. C'est ce qui rend un rendu noté faisable en 45 minutes.
+- **Une cellule de conclusion rédigée** clôt chaque TP noté : c'est elle qui porte
+  l'essentiel de la note, pas le code.
 - **Jeu de données de secours** versionné en CSV : le cours fonctionne même sans
   connexion ou si une API tombe.
-- **Travail en binômes**, restitution orale de 5 minutes en fin de partie 3.
-- Corrigés commentés déposés après chaque séance.
+- **Travail en binômes** (la fiche d'actif est individuelle).
+- Corrigés commentés déposés en fin de séance, une fois tous les rendus reçus.
 
 ---
 
 ## Évaluation
 
-| Composante | Poids | Attendu |
-|---|---|---|
-| Fiche d'actif | 10 % | 1 page, individuelle — rendue en séance 2 |
-| Note de diagnostic empirique | 20 % | 2 pages + notebook — J+7 après la séance 2 |
-| Rapport de risque (S3) | 20 % | 2 pages + notebook, en binôme |
-| **Projet final** | 40 % | Notebook reproductible + note de synthèse de 3 pages |
-| Soutenance du projet (7 min) | 10 % | Clarté, honnêteté sur les limites |
+**Quatre rendus, tous produits et déposés en séance.** Il n'y a ni devoir à la
+maison, ni projet, ni examen terminal.
+
+| | Composante | Quand | Poids |
+|---|---|---|---|
+| **A** | Fiche d'actif express — *individuelle* | S1, partie 3 | 15 % |
+| **B** | Diagnostic descriptif — *TP 1A* | S1, partie 5 | 25 % |
+| **C** | Tests d'efficience — *TP 1B* | S2, partie 2 | 25 % |
+| **D** | Rapport de risque — *TP 2* | S2, partie 5 | 35 % |
+
+Chaque rendu est un **notebook exécuté** exporté en HTML. Pour B, C et D, il se
+termine par une **cellule de conclusion rédigée** : c'est elle qui porte
+l'essentiel de la note. Un notebook complet sans interprétation vaut moins qu'un
+notebook partiel bien conclu.
 
 ::: {.callout-important}
-## Critère transversal
-La **reproductibilité** est notée dans chaque livrable comportant du code : un
-notebook qui ne s'exécute pas de bout en bout après *Restart & Run All* est
-sanctionné, quelle que soit la qualité de l'analyse.
+## Deux critères transversaux
+**Reproductibilité** — un notebook qui ne s'exécute pas de bout en bout après
+*Restart & Run All* n'est pas corrigé.
+
+**Une limite reconnue** — chaque conclusion doit dire ce que sa méthode ne permet
+pas de conclure. Un résultat contraire à l'attendu, identifié et discuté, est
+bonifié ; dissimulé, il est sanctionné.
 :::
 
 Les poids ci-dessus portent sur **cet enseignement de 9 h**. Si le module retient
@@ -322,7 +346,7 @@ Ces sujets sont voisins et vous les rencontrerez peut-être ailleurs. Ils sont
 | Haute fréquence | Carnets d'ordres, microstructure fine, volatilité réalisée intra-journalière. |
 | Dérivés crypto | Valorisation d'options, volatilité implicite. Les perpétuels sont vus par leur mécanique, pas par leur valorisation. |
 | Technique blockchain | Cryptographie, contrats intelligents, développement. On s'arrête au niveau fonctionnel utile à l'analyse financière. |
-| Données on-chain | *Hash rate*, flux d'échanges, MVRV — faute de source gratuite fiable. Reste ouvert en sujet de projet. |
+| Données on-chain | *Hash rate*, flux d'échanges, MVRV — faute de source gratuite fiable. |
 | Droit approfondi | MiCA est traité sous l'angle économique — qui porte le risque. Ni le détail juridique, ni les régimes nationaux, ni la fiscalité. |
 | Paiements et CBDC | L'euro numérique est mentionné brièvement. Ni les paiements de détail, ni l'inclusion financière, ni les corridors de transfert. |
 
@@ -330,11 +354,9 @@ Ces sujets sont voisins et vous les rencontrerez peut-être ailleurs. Ils sont
 ## Pourquoi vous dire ce qu'on ne fait pas
 Un syllabus qui ne délimite pas son périmètre laisse croire qu'il couvre tout.
 Cette liste vous permet de savoir ce que vous devez chercher ailleurs si votre
-projet ou votre stage l'exige — et plusieurs de ces sujets sont recevables comme
-sujet libre de projet, à condition d'en discuter avec moi.
+mémoire ou votre stage l'exige. Plusieurs de ces sujets sont abordés dans l'autre
+volet du module, ou dans les cours de séries temporelles du parcours.
 :::
-
-Les sujets de projet et les grilles détaillées figurent dans `04-Eval/`.
 
 ---
 
