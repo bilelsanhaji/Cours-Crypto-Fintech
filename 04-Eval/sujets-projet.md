@@ -11,7 +11,7 @@
 | **Travail** | En binôme (trinôme accepté si effectif impair, avec exigences relevées) |
 | **Livrables** | 1 notebook Jupyter reproductible + 1 note de synthèse de 3 pages + 1 soutenance de 7 min |
 | **Poids** | 40 % (écrit) + 10 % (soutenance) de la note de l'enseignement |
-| **Validation du sujet** | Obligatoire, **avant la fin de la séance 3** |
+| **Validation du sujet** | Obligatoire, **avant la fin de la séance 2** |
 | **Dépôt** | Une archive `NOM1-NOM2.zip` contenant le notebook, la note en PDF, et les données si elles ne sont pas téléchargeables |
 
 > **Trois exigences non négociables**
@@ -148,7 +148,7 @@ Votre question doit :
 
 1. être formulée de façon à recevoir une réponse **chiffrée** ;
 2. être traitable avec les données du panier ou des données librement accessibles ;
-3. mobiliser au moins **deux** des trois séances ;
+3. mobiliser au moins **deux** des deux séances ;
 4. ne pas être une prédiction de prix.
 
 **Exemples déjà validés les années précédentes**
@@ -170,9 +170,9 @@ Votre question doit :
 
 | Étape | Échéance |
 |---|---|
-| Validation du sujet | Fin de la séance 3 |
+| Validation du sujet | Fin de la séance 2 |
 | Question de méthode par courriel | Jusqu'à J−7 |
-| Dépôt du notebook + note | J (à fixer, ≈ 3 semaines après la séance 3) |
+| Dépôt du notebook + note | J+28 après la séance 2 |
 | Soutenances | Semaine suivante |
 
 ---

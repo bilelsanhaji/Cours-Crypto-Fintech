@@ -18,9 +18,8 @@
 # Slides : les sources contiennent les notes de conduite de séance, que
 # reveal.js embarque dans le HTML (touche S). Seule la version épurée,
 # produite par _build-version-etudiante.py, est publiée.
-01-Slides/S1-fondamentaux.qmd
-01-Slides/S2-faits-stylises.qmd
-01-Slides/S3-risque.qmd
+01-Slides/S1-comprendre-decrire.qmd
+01-Slides/S2-tester-mesurer.qmd
 01-Slides/*.html
 !01-Slides/etudiant/
 _build-version-etudiante.py

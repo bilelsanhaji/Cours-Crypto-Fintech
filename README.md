@@ -1,7 +1,7 @@
 # Cryptomonnaies et Fintech — M2 MBFA, parcours Finance
 
 **Université Paris 8 — Master 2 Monnaie, Banque, Finance, Assurance**
-Enseignement de 9 heures — 3 séances de 3 × 50 min · B. Sanhaji
+Enseignement de 9 heures — 2 séances de 4 h 30 · B. Sanhaji
 
 ---
 
@@ -11,7 +11,7 @@ Ce cours traite les crypto-actifs comme une **classe d'actifs à part entière**
 leurs instruments, leur microstructure, leur cadre réglementaire, et surtout
 leurs propriétés statistiques particulières.
 
-Le fil des trois séances :
+Le fil des deux séances :
 
 | | Question directrice | Ce que vous saurez faire |
 |---|---|---|
@@ -31,7 +31,7 @@ de crédit.
 | Dossier | Contenu |
 |---|---|
 | `00-Syllabus/` | Le syllabus complet : objectifs, programme, évaluation, bibliographie |
-| `01-Slides/etudiant/` | Les slides des trois séances (Quarto reveal.js) |
+| `01-Slides/etudiant/` | Les slides des deux séances (Quarto reveal.js) |
 | `02-TP/` | Les notebooks des travaux pratiques, et le guide d'installation |
 | `03-Data/` | Le script de collecte des données, et un jeu de secours |
 | `04-Eval/` | Les sujets de projet et les consignes de rendu |

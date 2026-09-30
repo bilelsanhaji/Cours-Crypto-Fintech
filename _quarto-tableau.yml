@@ -1,6 +1,6 @@
 # Profil « tableau » — pour projeter en salle avec annotation en direct.
 #
-#   quarto render 01-Slides/S1-fondamentaux.qmd --profile tableau
+#   quarto render 01-Slides/S1-comprendre-decrire.qmd --profile tableau
 #
 # Raccourcis en présentation :
 #   B  → tableau blanc plein écran

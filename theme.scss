@@ -25,8 +25,8 @@ $encre:        #16222E;   // presque noir, teinté Prusse
 
 // ---- Typographie ----------------------------------------------------------
 $font-family-sans-serif: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif !default;
-$presentation-font-size-root: 30px;
-$presentation-line-height: 1.35;
+$presentation-font-size-root: 30px;   // même valeur que vos autres cours
+$presentation-line-height: 1.28;
 
 $body-bg: $blanc;
 $body-color: $encre;
@@ -70,8 +70,8 @@ $selection-bg: rgba(0, 47, 167, .18);
 // ---- Titres ---------------------------------------------------------------
 .reveal h2 {
   border-bottom: 1px solid $argent;
-  padding-bottom: .20em;
-  margin-bottom: .55em;
+  padding-bottom: .14em;
+  margin-bottom: .38em;
   letter-spacing: -.008em;
 }
 
@@ -129,9 +129,9 @@ $selection-bg: rgba(0, 47, 167, .18);
 
 // ---- Tableaux -------------------------------------------------------------
 .reveal table {
-  font-size: .76em;
+  font-size: .70em;
   border-collapse: collapse;
-  margin: .4em auto;
+  margin: .25em auto;
 }
 .reveal table th {
   background: $prusse-voile;
@@ -141,14 +141,14 @@ $selection-bg: rgba(0, 47, 167, .18);
   text-align: left;
 }
 .reveal table td { border-bottom: 1px solid $argent-clair; }
-.reveal table td, .reveal table th { padding: .26em .62em; }
+.reveal table td, .reveal table th { padding: .18em .52em; }
 .reveal table tbody tr:last-child td { border-bottom: 1px solid $argent; }
 
 // ---- Encadrés -------------------------------------------------------------
 %encadre {
-  padding: .52em .95em .55em;
-  margin: .55em 0;
-  font-size: .90em;
+  padding: .38em .85em .40em;
+  margin: .38em 0;
+  font-size: .88em;
   border-radius: 2px;
 }
 
@@ -187,7 +187,7 @@ $selection-bg: rgba(0, 47, 167, .18);
 // ---- Chiffre mis en avant -------------------------------------------------
 .chiffre {
   display: block;
-  font-size: 1.75em;
+  font-size: 1.5em;
   font-weight: 700;
   color: $klein;
   line-height: 1.05;
@@ -222,22 +222,22 @@ $selection-bg: rgba(0, 47, 167, .18);
 
 // ---- Formules -------------------------------------------------------------
 .reveal .math.display { color: $prusse; }
-.reveal mjx-container[display="true"] { margin: .45em 0 !important; }
+.reveal mjx-container[display="true"] { margin: .28em 0 !important; }
 
 // formule encadrée, résultat à retenir
 .formule-cle {
   background: $blanc;
   border: 1px solid $klein;
   border-left: 4px solid $klein;
-  padding: .3em .8em;
-  margin: .5em auto;
+  padding: .22em .7em;
+  margin: .3em auto;
   display: inline-block;
 }
 
 // ---- Schémas SVG ----------------------------------------------------------
 .schema {
   display: block;
-  margin: .35em auto;
+  margin: .2em auto;
   max-width: 100%;
 }
 .schema text { font-family: $font-family-sans-serif; }
@@ -262,3 +262,19 @@ $selection-bg: rgba(0, 47, 167, .18);
   border-left: 4px solid #4A7C59;
 }
 .resultat strong { color: #35603F; }
+
+
+// ---- Densité : garde-fous ajoutés après mesure des débordements -----------
+.reveal ul, .reveal ol { margin-bottom: .3em; }
+.reveal ul li, .reveal ol li { margin-top: .12em; }
+.reveal p { margin: .3em 0; }
+.reveal .columns > .column > :first-child { margin-top: 0; }
+
+// Deux colonnes pour les listes de références
+.refs-2col {
+  column-count: 2;
+  column-gap: 2em;
+  font-size: .62em;
+}
+.refs-2col p { break-inside: avoid; margin: .25em 0 .5em; }
+.refs-2col strong { color: $prusse; }

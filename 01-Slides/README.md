@@ -8,7 +8,7 @@ thème se trouvent à la **racine du dépôt** (`_quarto.yml`, `theme.scss`).
 Depuis la racine du dépôt :
 
 ```bash
-quarto render 01-Slides/etudiant/S1-fondamentaux.qmd
+quarto render 01-Slides/etudiant/S1-comprendre-decrire.qmd
 ```
 
 ou tout d'un coup :

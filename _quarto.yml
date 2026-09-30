@@ -2,11 +2,11 @@
 #
 # Deux modes de rendu pour les séances :
 #
-#   quarto render 01-Slides/S1-fondamentaux.qmd
+#   quarto render 01-Slides/S1-comprendre-decrire.qmd
 #       → un fichier HTML UNIQUE, autonome, sans dépendance externe.
 #         C'est la version à projeter et à distribuer aux étudiants.
 #
-#   quarto render 01-Slides/S1-fondamentaux.qmd --profile tableau
+#   quarto render 01-Slides/S1-comprendre-decrire.qmd --profile tableau
 #       → active le tableau blanc (annotation en direct sur les slides,
 #         touche B pour le tableau, C pour le stylo). Le rendu part dans
 #         `_tableau/`, qui est exclu du dépôt.

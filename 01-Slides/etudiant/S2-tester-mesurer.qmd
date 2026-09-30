@@ -1,28 +1,28 @@
 ---
-title: "Séance 3 — Mesurer et backtester le risque"
-subtitle: "Volatilité, VaR, Expected Shortfall · M2 MBFA, parcours Finance"
+title: "Séance 2 — Tester et mesurer"
+subtitle: "Efficience, volatilité, VaR · M2 MBFA, parcours Finance"
 # Configuration commune : _quarto.yml, à la racine du dépôt
 format:
   revealjs:
-    footer: "M2 MBFA — Crypto & Fintech — Séance 3"
+    footer: "M2 MBFA — Crypto & Fintech — Séance 2"
 ---
 
 <!--
   VERSION ÉTUDIANTE — générée automatiquement par _build-version-etudiante.py
   Ne pas modifier directement : toute modification serait écrasée.
-  La source se trouve dans 01-Slides/S3-risque.qmd
+  La source se trouve dans 01-Slides/S2-tester-mesurer.qmd
 -->
 
 ## Déroulé de la séance {.smaller}
 
 ::: {.small}
-| | | Durée | Ce qu'on y fait |
-|---|---|---|---|
-| **1** | Estimer une volatilité qui bouge | 50 min | Trois estimateurs, et pourquoi λ = 0,94 ne va pas |
-| | *pause* | 10 min | |
-| **2** | VaR, Expected Shortfall, backtesting | 50 min | Mesurer le risque — et **prouver** que la mesure tient |
-| | *pause* | 10 min | |
-| **3** | TP 2 et lancement du projet | 50 min | Votre verdict chiffré, votre sujet validé |
+| | Partie | Ce qu'on y fait |
+|---|---|---|
+| **1** | Efficience et prédictibilité | Tester la marche aléatoire — et savoir lire un rejet |
+| **2** | TP 1B — tests d'efficience | La suite du diagnostic, puis la note |
+| **3** | Estimer une volatilité qui bouge | Trois estimateurs, et pourquoi λ = 0,94 ne va pas |
+| **4** | VaR, Expected Shortfall, backtesting | Mesurer le risque — et **prouver** que la mesure tient |
+| **5** | TP 2 et lancement du projet | Votre verdict chiffré, votre sujet validé |
 :::
 
 ::: {.retenir}
@@ -32,14 +32,31 @@ Et surtout la seconde, que peu de cours posent :
 :::
 
 
+## QCM de rappel — 5 minutes
+
+::: {.small}
+Cinq questions sur la séance 1, autocorrigées. **Non noté.**
+
+1. Un fournisseur de liquidité sur AMM est-il acheteur ou vendeur de volatilité ?
+2. Pourquoi l'USDC est-il tombé à 0,87 \$ en mars 2023 ?
+3. Que régule MiCA — le protocole, ou l'intermédiation ?
+4. Le Bitcoin baisse de 30 % : que vaut le rendement logarithmique ?
+5. Sur une série crypto, que valent $\rho(r_t,r_{t-1})$ et $\rho(|r_t|,|r_{t-1}|)$ ?
+:::
+
+::: {.question}
+Répondez d'abord seul, puis on corrige ensemble.
+:::
+
+
 ## Où nous en sommes
 
 ::: {.small}
 | | Acquis |
 |---|---|
-| **S1** | Ces actifs ont des logiques de valorisation différentes ; leur marché produit de la volatilité de façon partiellement **endogène** |
-| **S2** | Le rendement est imprévisible ; **son amplitude ne l'est pas** ; les queues sont épaisses ($\alpha$ souvent < 4) |
-| **S3** | On **exploite** S2 pour mesurer le risque — et on **vérifie** que la mesure tient |
+| **Séance 1, p. 1-3** | Ces actifs ont des logiques de valorisation différentes ; leur marché produit de la volatilité de façon partiellement **endogène** |
+| **Séance 1, p. 4-5** | Le rendement est imprévisible ; **son amplitude ne l'est pas** ; les queues sont épaisses ($\alpha$ souvent < 4) |
+| **Aujourd'hui** | On **exploite** ces acquis pour mesurer le risque — et on **vérifie** que la mesure tient |
 :::
 
 ::: {.formule-cle}
@@ -54,7 +71,258 @@ On ne prétend rien sur $\varepsilon_t$.
 :::
 
 
-# 1 — Estimer une volatilité qui bouge
+# 1 — Efficience et prédictibilité
+
+## Les trois formes de l'efficience
+
+::: {.small}
+| Forme | Information incorporée | Ce qu'on peut tester |
+|---|---|---|
+| **Faible** | Historique des prix | Autocorrélation, ratio de variance, règles techniques |
+| **Semi-forte** | Toute information publique | Études d'événements |
+| **Forte** | Toute information, y compris privée | Performance des initiés |
+:::
+
+::: {.retenir}
+Efficience ≠ « le prix est juste ».
+
+Efficience = **« on ne peut pas gagner systématiquement avec cette information,
+net de coûts et ajusté du risque »**.
+
+Un marché peut être efficient et absurdement volatil.
+:::
+
+
+## La marche aléatoire : trois versions, pas une
+
+$$p_t = \mu + p_{t-1} + \varepsilon_t \qquad (p_t = \ln P_t)$$
+
+Tout dépend de ce qu'on exige de $\varepsilon_t$ :
+
+::: {.definition}
+**RW1** — $\varepsilon_t$ **i.i.d.** Version la plus forte. Interdit toute
+dépendance, y compris dans les moments d'ordre 2.
+
+**RW2** — $\varepsilon_t$ **indépendants** mais non identiquement distribués.
+Autorise l'hétéroscédasticité.
+
+**RW3** — $\varepsilon_t$ seulement **non corrélés**. Version la plus faible.
+:::
+
+::: {.piege}
+Les crypto-actifs **violent RW1** de façon massive : l'agrégation de volatilité
+établie en partie 1 est une dépendance dans les carrés.
+
+Cela ne dit **rien** de RW3. Et c'est RW3 qui intéresse l'efficience, car c'est
+la corrélation des rendements — pas leur indépendance — qui ouvrirait une
+opportunité de gain.
+:::
+
+::: {.retenir}
+Le ratio de variance teste **RW3**. C'est le bon test, et c'est pourquoi on
+l'utilise plutôt que l'autocorrélation brute.
+:::
+
+
+## Racine unitaire : ADF et KPSS sont complémentaires
+
+::: {.columns}
+::: {.column width="50%"}
+### ADF — Dickey-Fuller augmenté
+
+$H_0$ : **racine unitaire**
+(non stationnaire)
+
+Rejeter → conclure à la stationnarité
+:::
+::: {.column width="50%"}
+### KPSS
+
+$H_0$ : **stationnarité**
+
+Rejeter → conclure à la
+non-stationnarité
+:::
+:::
+
+::: {.small}
+| ADF | KPSS | Conclusion |
+|---|---|---|
+| ne rejette pas | rejette | **Non stationnaire** — cas des prix |
+| rejette | ne rejette pas | **Stationnaire** — cas des rendements |
+| rejette | rejette | Contradiction → mémoire longue, rupture structurelle ? |
+| ne rejette pas | ne rejette pas | Échantillon peu informatif |
+:::
+
+::: {.piege}
+Sur les prix, ADF ne rejette pas et KPSS rejette. **C'est attendu et normal.**
+Ce résultat ne dit **rien** de spécifique aux cryptos : il vaut pour toute série
+de prix financiers. Ne pas le présenter comme une découverte.
+:::
+
+
+## Le ratio de variance de Lo–MacKinlay
+
+Sous marche aléatoire, la variance croît **linéairement** avec l'horizon :
+
+$$\operatorname{Var}\!\big(r_t^{(q)}\big) = q \cdot \operatorname{Var}(r_t)$$
+
+::: {.formule-cle}
+$$VR(q) \;=\; \frac{\operatorname{Var}\big(r_t^{(q)}\big)}{q \cdot \operatorname{Var}(r_t)} \;\;\overset{H_0}{=}\;\; 1$$
+:::
+
+<svg class="schema" viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interprétation du ratio de variance">
+  <line x1="80" y1="175" x2="850" y2="175" stroke="var(--argent-fonce)" stroke-width="1.2"/>
+  <line x1="80" y1="175" x2="80"  y2="25"  stroke="var(--argent-fonce)" stroke-width="1.2"/>
+  <text x="850" y="198" text-anchor="end" font-size="13.5" fill="var(--argent-fonce)">horizon q</text>
+  <text x="66" y="30" text-anchor="end" font-size="13.5" fill="var(--argent-fonce)" transform="rotate(-90 66 30)">Var(r sur q périodes)</text>
+  <!-- marche aléatoire : linéaire -->
+  <line x1="80" y1="175" x2="760" y2="60" stroke="var(--argent-fonce)" stroke-width="2.2" stroke-dasharray="7 4"/>
+  <text x="768" y="58" font-size="13.5" fill="var(--argent-fonce)">VR = 1</text>
+  <text x="768" y="76" font-size="12" fill="var(--argent-fonce)">marche aléatoire</text>
+  <!-- persistance -->
+  <path d="M80,175 C300,135 520,80 750,32" fill="none" stroke="var(--klein)" stroke-width="2.6"/>
+  <text x="760" y="30" font-size="13.5" font-weight="600" fill="var(--klein)">VR &gt; 1</text>
+  <text x="760" y="47" font-size="12" fill="var(--klein)">persistance, tendance</text>
+  <!-- retour à la moyenne -->
+  <path d="M80,175 C300,160 520,140 750,118" fill="none" stroke="var(--or)" stroke-width="2.6"/>
+  <text x="760" y="116" font-size="13.5" font-weight="600" fill="#8C6D12">VR &lt; 1</text>
+  <text x="760" y="133" font-size="12" fill="#8C6D12">retour à la moyenne</text>
+</svg>
+
+::: {.retenir}
+Utiliser **impérativement** la statistique robuste à l'hétéroscédasticité.
+Avec l'agrégation de volatilité établie en partie 1, la version homoscédastique
+rejette **pour la mauvaise raison**.
+:::
+
+
+## De la prédictibilité au profit : le fossé
+
+Supposons que le test rejette la marche aléatoire. Que peut-on en faire ?
+
+::: {.small}
+| Obstacle | Ordre de grandeur |
+|---|---|
+| **Écart achat-vente** | 5 à 50 points de base par aller-retour selon la liquidité |
+| **Impact de marché** | Croît avec la taille ; le carnet crypto est mince hors BTC/ETH |
+| **Frais** | 0,1 à 0,5 % par transaction sur plateforme de détail |
+| **Coût du levier** | Le taux de financement (séance 1) |
+| **Dragage de données** | Tester 100 stratégies produit 5 « significatives » à 5 % |
+| **Décroissance post-publication** | **−26 %** hors échantillon, **−58 %** après publication |
+:::
+
+::: {.retenir}
+Un ratio de variance qui rejette à 5 % est un **résultat statistique**.
+Ce n'est **pas** une stratégie.
+
+La distance entre les deux est la raison d'être de la finance quantitative
+professionnelle.
+:::
+
+
+## L'efficience du Bitcoin a-t-elle changé ?
+
+::: {.columns}
+::: {.column width="50%"}
+### Pour **plus** d'inefficience
+
+- Marché jeune, beaucoup d'investisseurs non professionnels
+- Fragmentation entre plateformes
+- Arbitrage entravé — retraits, conformité, contrôle des capitaux
+- Information non standardisée
+:::
+::: {.column width="50%"}
+### Pour une efficience **croissante**
+
+- Arrivée massive des institutionnels via les ETF
+- Teneurs de marché professionnels
+- Marché continu, sans clôture
+- Arbitrage comptant / dérivés très actif
+:::
+:::
+
+::: {.retenir}
+**Hypothèse testable, avec vos données** : l'efficience du Bitcoin s'est-elle
+améliorée depuis le **11 janvier 2024** (lancement des ETF au comptant) ?
+
+Comparer $VR(q)$ avant et après. **C'est le sujet de projet n° 1.**
+:::
+
+
+# 2 — TP 1B : tests d'efficience
+
+## Reprendre le diagnostic là où on l'a laissé
+
+Rouvrir `02-TP/TP1B-efficience.ipynb`
+
+::: {.small}
+| | Partie | Priorité |
+|---|---|---|
+| 1 | ADF et KPSS sur prix et rendements | ⬤ |
+| 2 | **Ratio de variance robuste**, $q \in \{2,4,8,16\}$ | ⬤ |
+| 3 | Comparaison robuste / non robuste | ⬤ |
+| 4 | Avant / après janvier 2024 — l'effet des ETF | ○ |
+| 5 | **Note de diagnostic — 2 pages** | ⬤ |
+:::
+
+::: {.piege}
+Les parties 1 à 4 sont mécaniques. **La partie 5 fait la note.**
+On y attend un jugement argumenté, pas une liste de résultats.
+:::
+
+
+## Ce qui est attendu dans la note
+
+::: {.small}
+✅ **Attendu**
+
+> « La kurtosis de SOL passe de 8 à 14 quand on étend l'échantillon de 500 à
+> 2 000 points, ce qui suggère que le moment d'ordre 4 n'est pas fini ; nous
+> utiliserons donc des mesures de risque non paramétriques. »
+
+> « Le $VR$ robuste rejette à $q=2$ mais pas à $q=16$ : l'écart à la marche
+> aléatoire est concentré à haute fréquence, ce qui évoque un effet de
+> microstructure plus qu'une prédictibilité exploitable. »
+
+❌ **Non attendu**
+
+> « Le test ADF donne une p-value de 0,43, donc le Bitcoin est non stationnaire. »
+> *(descriptif — c'est une lecture, pas une interprétation)*
+
+> « Le marché n'est pas efficient car Jarque-Bera rejette. »
+> *(faux raisonnement — JB ne teste pas l'efficience)*
+:::
+
+::: {.retenir}
+La différence : **résultat → mécanisme → conséquence opérationnelle**.
+:::
+
+
+## À rendre — note de diagnostic
+
+**Note de diagnostic empirique** — 2 pages maximum, en binôme,
+avec le notebook exécuté.
+
+::: {.small}
+| Section | Contenu |
+|---|---|
+| 1. Données et choix méthodologiques | ½ page — période, actifs, calendrier retenu, **justification du facteur d'annualisation** |
+| 2. Faits stylisés | 1 page — tableau, QQ-plot, corrélogrammes, une phrase d'interprétation par résultat, comparaison crypto / traditionnel |
+| 3. Efficience | ½ page — ADF, KPSS, $VR$, et **conclusion argumentée** |
+:::
+
+::: {.retenir}
+**Pour la partie 4** : gardez vos kurtosis sous la main. Nous calculerons une VaR
+gaussienne sur ces mêmes séries et mesurerons **exactement** de combien elle se
+trompe.
+
+Question à garder en tête : si la queue suit une loi de puissance avec
+$\alpha \approx 3$, que vaut un quantile calculé sous hypothèse normale ?
+:::
+
+
+# 3 — Estimer une volatilité qui bouge
 
 ## Ce qu'on appelle « volatilité »
 
@@ -101,21 +369,18 @@ choix sur crypto : elle mélange des régimes sans rapport. Une volatilité de 6
   <line x1="70" y1="215" x2="70"  y2="35"  stroke="var(--argent-fonce)" stroke-width="1.2"/>
   <text x="920" y="240" text-anchor="end" font-size="13.5" fill="var(--argent-fonce)">temps</text>
   <text x="56" y="38" text-anchor="end" font-size="13.5" fill="var(--argent-fonce)" transform="rotate(-90 56 38)">volatilité estimée</text>
-
   <!-- choc -->
   <line x1="240" y1="215" x2="240" y2="45" stroke="var(--or)" stroke-width="1.6" stroke-dasharray="5 4"/>
   <text x="240" y="34" text-anchor="middle" font-size="13" font-weight="600" fill="#8C6D12">choc</text>
   <!-- sortie de fenêtre -->
   <line x1="690" y1="215" x2="690" y2="45" stroke="var(--or)" stroke-width="1.6" stroke-dasharray="5 4"/>
   <text x="690" y="34" text-anchor="middle" font-size="13" font-weight="600" fill="#8C6D12">choc − w jours plus tard</text>
-
   <!-- glissante w=252 : plateau puis chute brutale -->
   <path d="M80,185 L235,183 L245,95 L688,92 L695,180 L910,178"
         fill="none" stroke="var(--or)" stroke-width="2.8"/>
   <text x="420" y="80" font-size="13.5" font-weight="600" fill="#8C6D12">glissante w = 252 : plateau artificiel</text>
   <text x="740" y="140" font-size="13" font-weight="600" fill="#8C6D12">chute brutale</text>
   <text x="740" y="157" font-size="12.5" fill="#8C6D12">sans aucun événement</text>
-
   <!-- EWMA : pic puis décroissance -->
   <path d="M80,192 L235,190 L248,70 C300,105 380,145 470,165 C580,185 750,190 910,190"
         fill="none" stroke="var(--klein)" stroke-width="2.8"/>
@@ -189,7 +454,7 @@ Pour un horizon d'un jour — celui de la VaR réglementaire — c'est sans cons
 :::
 
 
-# 2 — VaR, Expected Shortfall, backtesting
+# 4 — VaR, Expected Shortfall, backtesting
 
 ## Value at Risk : définition et convention
 
@@ -347,7 +612,7 @@ mais les subit **en rafale** — ce qu'un appel de marge ne pardonne pas.
 :::
 
 
-# 3 — TP 2 et lancement du projet
+# 5 — TP 2 et lancement du projet
 
 ## Chaîne complète de gestion du risque
 
@@ -441,31 +706,22 @@ marchés émergents, le risque de crédit.
 :::
 
 
-## Références de la séance {.smaller}
+## Pour aller plus loin {.smaller}
 
-::: {.xsmall}
-**Volatilité**
-
-- **J.P. Morgan / Reuters** (1996), *RiskMetrics — Technical Document*, 4ᵉ éd. — origine de l'EWMA et de λ = 0,94.
-- **Christoffersen, P.** (2011), *Elements of Financial Risk Management*, 2ᵉ éd., Academic Press — chapitres 4 et 8. La meilleure porte d'entrée.
-
-**VaR et Expected Shortfall**
-
-- **Jorion, P.** (2007), *Value at Risk: The New Benchmark for Managing Financial Risk*, 3ᵉ éd., McGraw-Hill.
-- **Artzner, P., Delbaen, F., Eber, J.-M., Heath, D.** (1999), « Coherent Measures of Risk », *Mathematical Finance*, 9(3), 203-228.
-- **Comité de Bâle** (2019), *Minimum Capital Requirements for Market Risk* (FRTB) — ES à 97,5 %.
-
-**Backtesting**
-
-- **Kupiec, P.** (1995), « Techniques for Verifying the Accuracy of Risk Measurement Models », *Journal of Derivatives*, 3(2), 73-84.
-- **Christoffersen, P.** (1998), « Evaluating Interval Forecasts », *International Economic Review*, 39(4), 841-862.
-- **Christoffersen, P. & Pelletier, D.** (2004), « Backtesting Value-at-Risk: A Duration-Based Approach », *J. of Financial Econometrics*, 2(1) — plus puissant, hors programme.
-- **Engle, R. & Manganelli, S.** (2004), « CAViaR », *JBES*, 22(4) — le *Dynamic Quantile test*.
-
-**Corrélations et diversification**
-
-- **Longin, F. & Solnik, B.** (2001), « Extreme Correlation of International Equity Markets », *Journal of Finance*, 56(2), 649-676.
-- **Boyer, B., Gibson, M. & Loretan, M.** (1999), « Pitfalls in Tests for Changes in Correlations », *Fed IFDP* 597.
-- **Baur, D. & Lucey, B.** (2010), « Is Gold a Hedge or a Safe Haven? », *Financial Review*, 45(2), 217-229 — le cadre du sujet de projet n° 3.
+::: {.definition}
+**Si vous ne lisez qu'un ouvrage** — **Christoffersen, P.** (2011), *Elements of
+Financial Risk Management*, 2ᵉ éd. Les chapitres 4 et 8 couvrent exactement le
+programme des séances 2 et 3, avec des exercices sur données réelles.
 :::
 
+::: {.small}
+| Si vous voulez creuser… | Référence |
+|---|---|
+| L'origine de l'EWMA | J.P. Morgan (1996), *RiskMetrics Technical Document* |
+| La référence historique sur la VaR | Jorion (2007) |
+| Pourquoi l'ES plutôt que la VaR | Artzner *et al.* (1999), *Mathematical Finance* |
+| Le cadre réglementaire | Comité de Bâle (2019), *FRTB* |
+| Les deux tests de la séance | Kupiec (1995) · Christoffersen (1998) |
+| Backtesting plus puissant | Christoffersen & Pelletier (2004) · Engle & Manganelli (2004) |
+| Corrélations en régime de stress | Longin & Solnik (2001) · Boyer, Gibson & Loretan (1999) |
+:::

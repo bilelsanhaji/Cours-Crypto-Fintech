@@ -33,10 +33,13 @@ gaussienne échoue sur le Bitcoin, et *le démontrer* sur un notebook reproducti
 
 ::: {.callout-note}
 ## Positionnement dans le module
-Le module « Cryptomonnaies et Fintech » représente 18 h au total. Cet enseignement en couvre
-9 ; les 9 h restantes sont assurées par un second intervenant. l'enseignement est conçu
-pour être **autoportant** : il ne suppose aucun contenu du second bloc et n'en
-conditionne aucun.
+Le module « Cryptomonnaies et Fintech » représente 18 h. Cet enseignement en couvre
+9 ; les 9 h restantes sont assurées par un second intervenant.
+
+Cet enseignement est **autoportant** : il ne suppose aucun contenu du second volet.
+Il suppose en revanche les prérequis listés ci-dessous, et il ne couvre pas
+certains sujets voisins — la liste explicite figure en fin de syllabus, pour que
+vous sachiez ce que vous devez chercher ailleurs.
 :::
 
 ### Informations pratiques
@@ -44,7 +47,7 @@ conditionne aucun.
 | | |
 |---|---|
 | **Public** | M2 Monnaie, Banque, Finance, Assurance — parcours Finance |
-| **Volume** | 9 h — 3 séances de 3 × 50 min |
+| **Volume** | 9 h — 2 séances de 4 h 30 |
 | **Format** | Cours magistral appliqué + travaux pratiques sur machine |
 | **Prérequis théoriques** | Séries temporelles (stationnarité, autocorrélation, rendements) ; statistique inférentielle (tests d'hypothèses) |
 | **Prérequis techniques** | Python : manipulation de `DataFrame` pandas, tracé matplotlib |
@@ -89,44 +92,65 @@ conditionne aucun.
 
 ---
 
-## Progression des trois séances
+## Progression des deux séances
 
 | | Séance | Question directrice | Livrable étudiant |
 |---|---|---|---|
-| **S1** | Anatomie d'une classe d'actifs | *De quoi parle-t-on, et comment ce marché fonctionne-t-il ?* | Fiche d'actif (1 page) + panier constitué |
-| **S2** | Le crypto-actif comme objet statistique | *En quoi ces séries diffèrent-elles des actions ?* | Note de diagnostic empirique (2 pages) |
-| **S3** | Mesurer et backtester le risque | *Combien puis-je perdre, et mon modèle le sait-il ?* | Rapport de risque + lancement du projet |
+| **S1** | Comprendre et décrire | *De quoi parle-t-on, et en quoi ces séries sont-elles particulières ?* | Fiche d'actif (1 page) + panier constitué |
+| **S2** | Tester et mesurer | *Que peut-on prévoir, et combien peut-on perdre ?* | Note de diagnostic + rapport de risque + projet |
 
-Chaque séance suit la même structure en trois parties de 50 minutes :
+Chaque séance dure **4 h 30** et compte **cinq parties de 50 minutes**, avec des
+pauses régulières. Les parties magistrales alternent avec les TP :
 
-- **Partie 1 — magistral** : les concepts, avec démonstrations chiffrées ;
-- **Partie 2 — magistral dialogué** : approfondissement, cas réel, débat cadré ;
-- **Partie 3 — TP sur machine** : les étudiants codent, en binômes, et rendent.
+| Séance 1 | | Séance 2 | |
+|---|---|---|---|
+| 1 | Le mécanisme | 1 | Efficience et prédictibilité |
+| 2 | Les objets et leurs marchés | 2 | **TP 1B** — tests d'efficience |
+| 3 | **TP 0** — vos premières données | 3 | Estimer une volatilité qui bouge |
+| 4 | Faits stylisés | 4 | VaR, Expected Shortfall, backtesting |
+| 5 | **TP 1A** — diagnostic descriptif | 5 | **TP 2** et lancement du projet |
+
+::: {.callout-note}
+## Un fil rouge cumulatif
+Un **panier de cinq actifs** — Bitcoin, Ethereum, Solana, S&P 500, or — est
+constitué en séance 1 et conservé jusqu'au projet final. Les données de S1 servent
+en S2, et les résultats de S2 servent d'entrée aux calculs de S3. Ne manquez pas
+une séance sans récupérer le notebook correspondant.
+:::
 
 ---
 
 ## Programme détaillé
 
-### Séance 1 — Anatomie d'une classe d'actifs
+### Séance 1 — Comprendre et décrire
 
-**Partie 1 (50 min) — De la monnaie au token**
+*De l'objet à la série. La séance bascule en partie 4 : on quitte la description institutionnelle pour traiter les mêmes objets comme des séries statistiques.*
 
-- Le problème que le Bitcoin prétend résoudre : le double dépense sans tiers de
-  confiance. Blockchain, minage, preuve de travail vs preuve d'enjeu — traités
-  comme un **mécanisme économique** (coût marginal de production, sécurité comme
-  bien économique), pas comme un objet technique.
-- Le Bitcoin est-il de la monnaie ? Confrontation aux trois fonctions
-  (unité de compte, réserve de valeur, intermédiaire des échanges). Réponse
-  argumentée : non pour la première, discutable pour la seconde.
+**Partie 1 (50 min) — Le mécanisme**
+
+- Le problème d'origine : la **double dépense** sans tiers de confiance.
+- Les **quatre objets** et rien d'autre : clé privée, adresse, transaction, bloc.
+  Conséquence financière : il n'y a pas de compte chez un teneur de registre, donc
+  pas de passif en face — la propriété *est* la détention de la clé.
+- La **fonction de hachage** et ses trois propriétés : pourquoi une empreinte est
+  un sceau, et ce que « chaîne » veut dire dans « chaîne de blocs ».
+- Le **minage** : le *nonce*, l'asymétrie coûteux à produire / gratuit à vérifier,
+  l'ajustement de difficulté.
+- La **règle de consensus** — chaîne la plus longue — et la double dépense résolue.
+  Le calcul de Nakamoto, et pourquoi « six confirmations » est une convention.
+- La sécurité comme **bien économique** : budget de sécurité, halvings, et le
+  problème ouvert de son financement par les seuls frais.
+- Preuve de travail contre preuve d'enjeu : ce que le *staking* change à la
+  **nature financière** de l'actif — un flux devient actualisable.
+- Le Bitcoin est-il de la monnaie ? Confrontation aux trois fonctions. Le cas du
+  Salvador, dont le cours légal a été **abrogé en janvier 2025**.
+
+**Partie 2 (50 min) — Les objets et leurs marchés**
+
 - **Taxonomie opérationnelle** en cinq familles, chacune avec sa logique de prix :
-  actif à offre rigide (BTC), token de plateforme avec cash-flows (ETH : frais de
-  transaction brûlés + rendement du *staking*), stablecoin (passif adossé),
-  token de gouvernance, actif du monde réel tokenisé.
-- Ce que « fintech » recouvre au-delà de la crypto : paiements, tokenisation des
-  titres, monnaie numérique de banque centrale.
-
-**Partie 2 (50 min) — L'écosystème financier**
-
+  actif à offre rigide (BTC), token de plateforme avec flux (ETH : frais brûlés et
+  rendement du *staking*), stablecoin (passif adossé), token de gouvernance, actif
+  du monde réel tokenisé.
 - Microstructure : plateformes centralisées vs décentralisées ; teneur de marché
   automatisé et formule à produit constant $x \cdot y = k$ ; **perte impermanente**
   dérivée et interprétée comme position vendeuse de volatilité.
@@ -154,9 +178,9 @@ Chaque séance suit la même structure en trois parties de 50 minutes :
 
 ---
 
-### Séance 2 — Le crypto-actif comme objet statistique
+#### Partie 4 (50 min) — Faits stylisés
 
-**Partie 1 (50 min) — Faits stylisés**
+**Partie 4 (50 min) — Faits stylisés**
 
 - Rendements arithmétiques vs logarithmiques : pourquoi le choix compte quand la
   volatilité quotidienne atteint 5 %.
@@ -172,7 +196,22 @@ Chaque séance suit la même structure en trois parties de 50 minutes :
 - Corrélations : le découplage supposé crypto/actions et sa remise en cause
   depuis l'arrivée des ETF au comptant.
 
-**Partie 2 (50 min) — Efficience et prédictibilité**
+**Partie 5 (50 min) — TP 1A : diagnostic descriptif**
+
+Les étudiants produisent, sur leur panier, le tableau complet des faits stylisés :
+statistiques descriptives comparées, graphiques quantile-quantile, stabilité de la
+kurtosis, estimateur de Hill, corrélogrammes de $r_t$ et de $\lvert r_t\rvert$.
+
+> **TP / Livrable** — notebook à conserver : la note de diagnostic portera sur ce
+> volet **et** sur les tests d'efficience de la séance 2.
+
+---
+
+### Séance 2 — Tester et mesurer
+
+*De la série à la mesure du risque.*
+
+**Partie 1 (50 min) — Efficience et prédictibilité**
 
 - Hypothèse d'efficience : les trois formes, et ce que chacune permet réellement
   de tester. Efficience ≠ prix « juste ».
@@ -185,20 +224,16 @@ Chaque séance suit la même structure en trois parties de 50 minutes :
   exploitables ? Coûts de transaction, écart achat-vente, dragage de données,
   disparition des anomalies après publication.
 
-**Partie 3 (50 min) — TP 1 : diagnostic empirique**
+**Partie 2 (50 min) — TP 1B : tests d'efficience**
 
-Les étudiants produisent, sur leur panier, le tableau complet des faits stylisés
-et la batterie de tests d'efficience, puis rédigent leur diagnostic.
+Reprise du diagnostic : tests de racine unitaire (ADF, KPSS), ratio de variance
+robuste, comparaison robuste / non robuste, et l'effet des ETF au comptant.
 
-> **Livrable** — Note de diagnostic empirique (2 pages max) : tableau de
-> statistiques descriptives comparées, graphique QQ, résultats des tests, et
-> **une conclusion argumentée** sur l'efficience du marché étudié.
+> **TP / Livrable** — **Note de diagnostic empirique** (2 pages max) portant sur
+> les deux volets du TP 1 : tableau de statistiques comparées, graphique QQ,
+> résultats des tests, et **une conclusion argumentée** sur l'efficience.
 
----
-
-### Séance 3 — Mesurer et backtester le risque
-
-**Partie 1 (50 min) — Estimer une volatilité qui bouge**
+**Partie 3 (50 min) — Estimer une volatilité qui bouge**
 
 - Volatilité réalisée sur fenêtre fixe : ce qu'elle mesure, ce qu'elle rate.
 - Volatilité glissante : arbitrage biais/variance dans le choix de la fenêtre ;
@@ -209,7 +244,7 @@ et la batterie de tests d'efficience, puis rédigent leur diagnostic.
 - Comparaison des trois estimateurs sur un choc réel : lequel réagit, lequel
   retarde, lequel persiste ?
 
-**Partie 2 (50 min) — VaR, Expected Shortfall et backtesting**
+**Partie 4 (50 min) — VaR, Expected Shortfall et backtesting**
 
 - VaR : définition, horizon, seuil. Quatre estimateurs comparés — historique,
   gaussienne, Student-*t* (avec estimation du degré de liberté), Monte Carlo.
@@ -224,7 +259,7 @@ et la batterie de tests d'efficience, puis rédigent leur diagnostic.
 - Corrélations glissantes crypto/actions : la diversification s'évanouit-elle
   précisément quand on en a besoin ?
 
-**Partie 3 (50 min) — TP 2 + lancement du projet**
+**Partie 5 (50 min) — TP 2 + lancement du projet**
 
 - Chaîne complète : estimation de volatilité → VaR/ES → backtesting → verdict.
 - Présentation des sujets de projet et constitution des binômes. Chaque binôme
@@ -238,7 +273,7 @@ et la batterie de tests d'efficience, puis rédigent leur diagnostic.
 
 ## Méthodes pédagogiques
 
-- **Un panier filé** sur les trois séances : les données de la séance 1 servent aux
+- **Un panier filé** sur les deux séances : les données de la séance 1 servent aux
   séances 2 et 3, ce qui rend la progression cumulative et évite les
   redémarrages à froid.
 - **Notebooks à trous** : le code d'infrastructure (import, mise en forme,
@@ -255,8 +290,8 @@ et la batterie de tests d'efficience, puis rédigent leur diagnostic.
 
 | Composante | Poids | Attendu |
 |---|---|---|
-| Fiche d'actif (S1) | 10 % | 1 page, individuelle |
-| Note de diagnostic empirique (S2) | 20 % | 2 pages + notebook, en binôme |
+| Fiche d'actif | 10 % | 1 page, individuelle — rendue en séance 2 |
+| Note de diagnostic empirique | 20 % | 2 pages + notebook — J+7 après la séance 2 |
 | Rapport de risque (S3) | 20 % | 2 pages + notebook, en binôme |
 | **Projet final** | 40 % | Notebook reproductible + note de synthèse de 3 pages |
 | Soutenance du projet (7 min) | 10 % | Clarté, honnêteté sur les limites |
@@ -266,6 +301,37 @@ et la batterie de tests d'efficience, puis rédigent leur diagnostic.
 La **reproductibilité** est notée dans chaque livrable comportant du code : un
 notebook qui ne s'exécute pas de bout en bout après *Restart & Run All* est
 sanctionné, quelle que soit la qualité de l'analyse.
+:::
+
+Les poids ci-dessus portent sur **cet enseignement de 9 h**. Si le module retient
+une évaluation commune aux deux volets, ils seront réajustés et vous en serez
+informés en séance 1.
+
+---
+
+## Ce qui n'est pas traité ici
+
+Ces sujets sont voisins et vous les rencontrerez peut-être ailleurs. Ils sont
+**hors périmètre** de cet enseignement, délibérément.
+
+| Domaine | Non traité |
+|---|---|
+| Volatilité conditionnelle | ARCH, GARCH et extensions. On s'arrête à l'EWMA, en signalant qu'elle en est un cas particulier contraint. |
+| Économétrie multivariée | DCC-GARCH, copules, contagion, VaR de portefeuille multivariée. |
+| Valeurs extrêmes | Au-delà de l'estimateur de Hill : loi de Pareto généralisée, dépassements de seuil. |
+| Haute fréquence | Carnets d'ordres, microstructure fine, volatilité réalisée intra-journalière. |
+| Dérivés crypto | Valorisation d'options, volatilité implicite. Les perpétuels sont vus par leur mécanique, pas par leur valorisation. |
+| Technique blockchain | Cryptographie, contrats intelligents, développement. On s'arrête au niveau fonctionnel utile à l'analyse financière. |
+| Données on-chain | *Hash rate*, flux d'échanges, MVRV — faute de source gratuite fiable. Reste ouvert en sujet de projet. |
+| Droit approfondi | MiCA est traité sous l'angle économique — qui porte le risque. Ni le détail juridique, ni les régimes nationaux, ni la fiscalité. |
+| Paiements et CBDC | L'euro numérique est mentionné brièvement. Ni les paiements de détail, ni l'inclusion financière, ni les corridors de transfert. |
+
+::: {.callout-note}
+## Pourquoi vous dire ce qu'on ne fait pas
+Un syllabus qui ne délimite pas son périmètre laisse croire qu'il couvre tout.
+Cette liste vous permet de savoir ce que vous devez chercher ailleurs si votre
+projet ou votre stage l'exige — et plusieurs de ces sujets sont recevables comme
+sujet libre de projet, à condition d'en discuter avec moi.
 :::
 
 Les sujets de projet et les grilles détaillées figurent dans `04-Eval/`.

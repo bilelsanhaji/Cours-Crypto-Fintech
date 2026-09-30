@@ -1,0 +1,199 @@
+---
+title: "Cryptomonnaies et Fintech — M2 MBFA"
+subtitle: "Synthèse de coordination · volet quantitatif, 9 h"
+author: "Bilel Sanhaji"
+date: last-modified
+date-format: "D MMMM YYYY"
+lang: fr
+format:
+  pdf:
+    documentclass: scrartcl
+    geometry: margin=2.2cm
+    fontsize: 10pt
+    colorlinks: true
+    linkcolor: "black"
+    number-sections: false
+  html:
+    theme: cosmo
+    embed-resources: true
+    toc: false
+---
+
+Le module « Cryptomonnaies et Fintech » représente **18 h** en M2 MBFA, parcours
+finance. Ce document décrit les **9 h que j'assure**, ce qu'elles couvrent, ce
+qu'elles ne couvrent pas, et les prérequis qu'elles supposent. Il propose une
+répartition et examine les conséquences de l'ordre dans lequel nos deux volets
+s'enchaînent.
+
+L'ensemble du matériel étudiant est public :
+[github.com/bilelsanhaji/Cours-Crypto-Fintech](https://github.com/bilelsanhaji/Cours-Crypto-Fintech).
+
+# 1. Le parti pris
+
+Les crypto-actifs y sont traités comme une **classe d'actifs**, avec la grille
+d'analyse financière standard : qui émet, quel est le passif en face, quels sont
+les flux, que disent les données. La compétence visée n'est pas « connaître la
+crypto » — c'est **mesurer un risque sur un actif dont la distribution se comporte
+mal, et vérifier sa mesure**.
+
+Une séance installe les objets et les mécanismes ; deux séances sont consacrées au
+traitement économétrique de données réelles, sur machine.
+
+::: {.callout-note appearance="simple"}
+**Format** — 2 séances de 4 h 30, pause de 10 min par heure. Ordinateur
+portable obligatoire : la troisième partie de chaque séance est un TP en binômes.
+Python (`pandas`, `numpy`, `scipy`, `statsmodels`, `yfinance`).
+:::
+
+# 2. Ce que je couvre
+
+**Séance 1 — Comprendre et décrire** *(de l'objet à la série)*
+
+| | Partie | Contenu |
+|:--|:--|:--|
+| 1 | Le mécanisme | Clé privée, adresse, transaction, bloc · hachage · minage · règle de consensus · budget de sécurité · preuve de travail contre preuve d'enjeu · le Bitcoin est-il de la monnaie ? |
+| 2 | Les objets et leurs marchés | Cinq familles de crypto-actifs · CEX contre DEX · teneur de marché automatisé et perte impermanente · contrat perpétuel et taux de financement · stablecoins · DeFi et tokenisation · **MiCA** |
+| 3 | TP 0 | Collecte de données, contrôle qualité, rendements · étude de cas du krach de 2026 |
+| 4 | Faits stylisés | Cont (2001) : rendements log contre arithmétiques · moments d'ordre 3 et 4 · indice de queue (Hill) · agrégation de la volatilité · effet de levier · **le piège du calendrier 24/7** |
+| 5 | TP 1A | Diagnostic descriptif : moments, queues, corrélogrammes |
+
+**Séance 2 — Tester et mesurer** *(de la série à la mesure du risque)*
+
+| | Partie | Contenu |
+|:--|:--|:--|
+| 1 | Efficience et prédictibilité | Les trois formes · marche aléatoire RW1/RW2/RW3 · ADF et KPSS · **ratio de variance de Lo–MacKinlay** robuste · de la prédictibilité au profit |
+| 2 | TP 1B | Tests d'efficience, puis note de diagnostic sur les deux volets |
+| 3 | Estimer une volatilité qui bouge | Volatilité réalisée, glissante, **EWMA / RiskMetrics** · effet fantôme · calibrage de $\lambda$ |
+| 4 | VaR, ES, backtesting | **VaR** historique, gaussienne, Student, Monte Carlo · **Expected Shortfall** · **Kupiec et Christoffersen** · corrélations en régime de stress |
+| 5 | TP 2 et projet | Chaîne complète et verdict chiffré · lancement du projet |
+
+**Fil rouge** — un panier de cinq actifs (Bitcoin, Ethereum, Solana, S&P 500, or)
+constitué en séance 1 et conservé jusqu'au projet. Les TP sont **cumulatifs** :
+les données de la séance 1 servent en séance 2, et les moments mesurés au TP 1A
+servent d'entrée au calcul de VaR du TP 2.
+
+# 3. Ce que je ne couvre pas
+
+Ces points sont **délibérément hors périmètre**. Ils sont disponibles si vous
+souhaitez les prendre.
+
+| Domaine | Non traité |
+|:--|:--|
+| **Modèles de volatilité conditionnelle** | ARCH, GARCH et leurs extensions. Je m'arrête à l'EWMA, en signalant qu'elle est un GARCH(1,1) contraint ($\omega = 0$, $\alpha+\beta = 1$). Une slide fait le pont, extensible ou réductible selon votre volet. |
+| **Économétrie multivariée** | DCC-GARCH, copules, contagion, VaR de portefeuille multivariée. Je m'en tiens aux corrélations glissantes. |
+| **Théorie des valeurs extrêmes** | Au-delà de l'estimateur de Hill : GPD, dépassements de seuil, estimation de quantiles extrêmes. |
+| **Haute fréquence** | Carnets d'ordres, microstructure fine, volatilité réalisée intra-journalière. Je reste en données quotidiennes. |
+| **Dérivés crypto** | Valorisation d'options, volatilité implicite, surfaces. Je mentionne les perpétuels par leur mécanique, pas par leur valorisation. |
+| **Technique blockchain** | Cryptographie, contrats intelligents, développement. Je m'arrête au niveau fonctionnel nécessaire à l'analyse financière. |
+| **Données on-chain** | Hash rate, flux d'échanges, MVRV. Faute de source gratuite fiable ; reste ouvert en sujet de projet. |
+| **Droit approfondi** | MiCA est traité en 6 minutes sous l'angle économique — qui porte le risque. Le détail juridique, les régimes nationaux, la fiscalité ne le sont pas. |
+| **Paiements et CBDC** | L'euro numérique est mentionné une minute. Les paiements de détail, l'inclusion financière, les corridors de transfert ne sont pas traités. |
+
+# 4. Prérequis supposés, et acquis en sortie
+
+**Ce que je suppose acquis** — séries temporelles : stationnarité,
+autocorrélation, notion de rendement · statistique inférentielle : test
+d'hypothèse, p-value, puissance · Python : manipulation de `DataFrame`, tracé.
+
+Je ne suppose **aucune** connaissance préalable sur les crypto-actifs.
+
+**Ce que les étudiants savent faire à la sortie de mes 9 h**
+
+- Classer un crypto-actif dans une famille et dire d'où vient son prix
+- Lire la structure d'un marché crypto et distinguer risque de contrepartie, risque de code et risque de marché
+- Situer une opération dans le cadre MiCA
+- Établir et **interpréter** les faits stylisés d'une série de rendements
+- Tester la marche aléatoire proprement, et savoir ce qu'un rejet ne prouve pas
+- Estimer une volatilité conditionnelle et justifier le choix d'estimateur
+- Calculer quatre VaR, une ES, et **prouver** laquelle tient sur les données
+- Produire une analyse reproductible et en exposer les limites
+
+# 5. Répartition proposée
+
+::: {.callout-important appearance="simple"}
+**Deux volets consécutifs de 9 h, et le volet fondamentaux en premier.**
+:::
+
+**Pourquoi consécutifs plutôt qu'alternés.** Mes deux séances forment une
+progression cumulative : le panier constitué en S1 est analysé en S2, et les
+résultats de S2 — notamment la kurtosis mesurée — servent d'entrée au calcul de
+VaR en S3. Chaque séance s'ouvre sur un rappel actif de la précédente. Un
+intercalage de trois semaines entre S2 et S3 casse cette chaîne, et les TP
+cumulatifs perdent leur sens.
+
+**Pourquoi les fondamentaux d'abord.** Quel que soit votre angle, il suppose de
+savoir ce qu'est un stablecoin, un teneur de marché automatisé, un contrat
+perpétuel. Estimer un GARCH sur une série Bitcoin sans savoir ce que le Bitcoin
+est, ou discuter la régulation d'un objet dont on n'a pas la taxonomie, revient à
+commencer par la fin.
+
+**Cela ne veut pas dire que je dois passer en premier.** Si votre volet couvre
+lui-même le socle — blockchain, objets, régulation — alors c'est vous qui ouvrez,
+et je prends mes 9 h en pur quantitatif, ce qui me libère deux parties de 50 min
+pour approfondir. Les deux configurations me conviennent ; c'est l'alternance qui
+me coûte.
+
+## Les trois cas, et ce qu'ils impliquent
+
+| | Conséquence pour mon volet |
+|:--|:--|
+| **J'ouvre le module** | Configuration par défaut, rien à changer. Ma S1 installe le vocabulaire que vous pouvez ensuite tenir pour acquis — la liste en section 2 vous dit exactement lequel. |
+| **Vous ouvrez le module** | Si vous traitez le socle, je supprime la partie 1 de ma S1 et redéploie 100 min : extension GARCH, théorie des valeurs extrêmes, ou VaR de portefeuille. Dites-moi ce que vous couvrez, je vous renvoie la version ajustée. |
+| **Alternance** | Faisable mais coûteux : je dois dupliquer les données entre séances et rendre chaque TP autonome, ce qui retire environ 20 min de contenu sur les 9 h. À éviter si possible. |
+
+# 6. Les deux points de recouvrement à trancher
+
+**① Les modèles de volatilité conditionnelle.** Si vous traitez ARCH/GARCH, je
+garde ma slide de pont à 3 minutes et j'y renvoie explicitement. Si personne ne
+les traite, je l'étends à 12 minutes — mais ce serait dommage pour un M2 MBFA de
+sortir du module sans les avoir vus.
+
+**② Le socle crypto.** Si vous traitez blockchain et régulation, nous nous
+recouvrons sur toute ma S1. Le mieux est alors que vous le fassiez et que je passe
+en pur quantitatif : c'est mon terrain, et cela libère du temps utile.
+
+::: {.callout-note appearance="simple"}
+Si vous utilisez **R**, ce n'est pas un problème : je l'annoncerai aux étudiants
+comme un choix assumé plutôt que comme une incohérence. Savoir passer d'un
+langage à l'autre fait partie du métier.
+:::
+
+# 7. Évaluation
+
+Mon volet est évalué par cinq composantes, avec la **reproductibilité notée** dans
+chaque rendu comportant du code :
+
+| Composante | Poids de mon volet |
+|:--|:--|
+| Fiche d'actif — 1 page, individuelle | 10 % |
+| Note de diagnostic empirique — 2 pages, binôme | 20 % |
+| Rapport de risque — 2 pages, binôme | 20 % |
+| Projet final — notebook reproductible + note de 3 pages | 40 % |
+| Soutenance du projet — 7 min | 10 % |
+
+**Deux options pour le module.**
+
+*Évaluation séparée* — chacun note son volet, la note finale est la moyenne. Simple,
+aucune coordination nécessaire.
+
+*Évaluation commune* — je propose alors un **projet unique** plutôt que deux, pour
+éviter d'empiler les rendus sur des étudiants de M2 déjà chargés :
+
+| | Poids |
+|:--|:--|
+| Projet unique, commun aux deux volets | 50 % |
+| Rendus de mon volet (fiche, diagnostic, rapport de risque) | 25 % |
+| Rendus de votre volet | 25 % |
+
+C'est mon option préférée : un travail approfondi vaut mieux que deux superficiels.
+
+# 8. Ce qu'il me faut de votre part
+
+1. Traitez-vous **ARCH/GARCH** ?
+2. Traitez-vous le **socle** — blockchain, objets, régulation ?
+3. Quel **logiciel** ?
+4. Votre volet passe-t-il **avant ou après** le mien ?
+5. Évaluation **commune ou séparée** ?
+
+Les questions 1 et 2 sont les seules qui modifient réellement mon contenu. Les
+trois autres relèvent de l'organisation et peuvent se régler en séance.
